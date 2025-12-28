@@ -1,11 +1,21 @@
 <template>
-  <div class="bg-white">
+  <div class="bg-white flex flex-col gap-16">
     <Hero />
-    <h1 class="text-2xl md:text-5xl font-medium text-black px-6 pt-16">Dipercaya oleh pelanggan kami untuk meningkatkan presensi digital bisnis mereka</h1>
-    <CaseStudiesCarousel />
+    <div>
+        <h1 class="text-4xl md:text-6xl font-medium text-black font-light text-center">Dipercaya oleh </h1>
+        <CaseStudiesCarousel />
+    </div>
+   
     <VisualizeCenter />
-    <h1 class="text-2xl md:text-5xl font-medium text-black text-center px-6 pt-16">Apa kelebihan website kami?</h1>
-    <Deliverables />
+    <div>
+        <h1 class="text-4xl md:text-6xl font-medium text-black font-light text-center bg-black text-white pt-12">Apa kelebihan website kami?</h1>
+        <Deliverables />
+    </div>
+    <div>
+        <h1  class="text-4xl md:text-6xl font-medium text-black font-light text-center">Ciptakan keperluan bisnis Anda</h1>
+        <CreateWithUs />
+    </div>
+    <CTA />
   </div>
 </template>
 
@@ -14,4 +24,6 @@ import Hero from '@/components/Hero.vue'
 import CaseStudiesCarousel from '@/components/CaseStudiesCarousel.vue'
 import VisualizeCenter from '@/components/VisualizeCenter.vue'
 import Deliverables from '@/components/Deliverables.vue'
+import CreateWithUs from '@/components/CreateWithUs.vue'
+import CTA from '@/components/CTA.vue'
 </script>

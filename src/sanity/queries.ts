@@ -36,7 +36,18 @@ export interface Hero {
     }
     alt?: string
   }
-  ctaButtons?: CTAButton[]
+  backgroundVideo?: {
+    asset?: {
+      _id?: string
+      url?: string
+      _type?: string
+    }
+  }
+  backgroundVideoUrl?: string
+  ctaButton?: {
+    label: string
+    link: string
+  }
   alignment?: 'left' | 'center' | 'right'
   isActive?: boolean
   statistics?: Statistic[]
@@ -80,6 +91,38 @@ export interface Deliverable {
   isActive?: boolean
 }
 
+export interface CreateWithUs {
+  _id: string
+  title: string
+  highlight?: string
+  description?: string
+  image: {
+    asset: {
+      _ref: string
+      _type: string
+    }
+    alt?: string | null
+  }
+  order?: number
+  isActive?: boolean
+}
+
+export interface CTA {
+  _id: string
+  tagline: string
+  description: string
+  buttonText: string
+  whatsappLink: string
+  backgroundImage: {
+    asset: {
+      _ref: string
+      _type: string
+    }
+    alt?: string | null
+  }
+  isActive?: boolean
+}
+
 // Queries
 export const POSTS_QUERY = defineQuery(/* groq */ `
   *[_type == "post"] | order(_createdAt desc) {
@@ -100,10 +143,17 @@ export const HERO_QUERY = `
       asset,
       alt
     },
-    ctaButtons[] {
+    backgroundVideo {
+      asset-> {
+        _id,
+        url,
+        _type
+      }
+    },
+    backgroundVideoUrl,
+    ctaButton {
       label,
-      link,
-      variant
+      link
     },
     alignment,
     isActive,
@@ -149,6 +199,36 @@ export const DELIVERABLES_QUERY = `
       alt
     },
     order,
+    isActive
+  }
+`
+
+export const CREATE_WITH_US_QUERY = `
+  *[_type == "createWithUs" && (!defined(isActive) || isActive == true)] | order(order asc, _createdAt desc) {
+    _id,
+    title,
+    highlight,
+    description,
+    image {
+      asset,
+      alt
+    },
+    order,
+    isActive
+  }
+`
+
+export const CTA_QUERY = `
+  *[_type == "cta" && (!defined(isActive) || isActive == true)] | order(_createdAt desc) [0] {
+    _id,
+    tagline,
+    description,
+    buttonText,
+    whatsappLink,
+    backgroundImage {
+      asset,
+      alt
+    },
     isActive
   }
 `

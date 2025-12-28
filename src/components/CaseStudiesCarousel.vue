@@ -54,15 +54,15 @@ onMounted(async () => {
         <!-- Featured Case Study (Large) -->
         <div 
           v-if="featuredStudy" 
-          class="grid grid-cols-1 lg:grid-cols-2 overflow-hidden min-h-[400px] lg:min-h-[500px]"
+          class="grid grid-cols-1 lg:grid-cols-2 overflow-hidden min-h-[400px] lg:min-h-[500px] rounded-xl overflow-hidden"
         >
           <!-- Left: Text Content with dark background -->
           <div class="bg-gray-100 p-8 lg:p-12 flex flex-col justify-center order-2 lg:order-1">
-            <h2 class="text-4xl lg:text-7xl font-medium text-black mb-6 tracking-tight leading-tight">
+            <h2 class="text-2xl md:text-4xl lg:text-6xl font-light text-black mb-6 tracking-tight leading-tight">
               {{ featuredStudy.title }}
             </h2>
-            <p class="text-2xl text-black/70 leading-relaxed">
-              <span v-if="featuredStudy.highlight" class="font-medium text-black">{{ featuredStudy.highlight }}</span>
+            <p class="text-md md:text-2xl text-black/70 leading-relaxed">
+              <span v-if="featuredStudy.highlight" class="font-light text-black">{{ featuredStudy.highlight }}</span>
               <span v-if="featuredStudy.highlight && featuredStudy.description"> </span>
               <span v-if="featuredStudy.description">{{ featuredStudy.description }}</span>
             </p>
@@ -101,7 +101,7 @@ onMounted(async () => {
             class="group cursor-pointer"
           >
             <!-- Image -->
-            <div class="relative mb-4 aspect-[16/9] overflow-hidden">
+            <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
               <img
                 v-if="getImageUrl(caseStudy, 800, 450)"
                 :src="getImageUrl(caseStudy, 800, 450)"
@@ -118,7 +118,7 @@ onMounted(async () => {
             
             <!-- Title and Client -->
             <div v-if="caseStudy.title || caseStudy.client">
-              <h3 class="text-2xl font-medium text-black mb-1">
+              <h3 class="text-2xl md:text-4xl font-light text-black mb-1">
                 {{ caseStudy.title }}
               </h3>
               <p v-if="caseStudy.client" class="text-sm text-black/50">

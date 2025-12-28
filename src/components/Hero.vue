@@ -14,6 +14,17 @@ const heroImageUrl = computed(() => {
   return null
 })
 
+const heroVideoUrl = computed(() => {
+  // Priority: backgroundVideoUrl (external URL) > backgroundVideo (Sanity file)
+  if (hero.value?.backgroundVideoUrl) {
+    return hero.value.backgroundVideoUrl
+  }
+  if (hero.value?.backgroundVideo?.asset?.url) {
+    return hero.value.backgroundVideo.asset.url
+  }
+  return null
+})
+
 const getSocialIconPath = (platform: string) => {
   const icons: Record<string, string> = {
     twitter: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
@@ -70,62 +81,77 @@ onMounted(async () => {
   <!-- Hero content -->
   <section 
     v-else-if="hero" 
-    class="relative flex items-center bg-white text-black px-6 py-16"
-    :style="heroImageUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}"
+    class="relative flex items-center bg-white text-black px-6 pb-16 overflow-hidden h-screen"
+    :style="heroImageUrl && !heroVideoUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}"
   >
-    <!-- Grid pattern overlay -->
-    <div v-if="!heroImageUrl" class="absolute inset-0 opacity-10" style="background-image: url('@/assets/pattern-2.png'); background-size: 40px 40px; background-repeat: repeat;"></div>
+    <!-- Background Video -->
+    <video
+      v-if="heroVideoUrl"
+      autoplay
+      muted
+      loop
+      playsinline
+      class="absolute inset-0 w-full h-full object-cover z-0"
+    >
+      <source :src="heroVideoUrl" type="video/mp4" />
+      <source :src="heroVideoUrl" type="video/webm" />
+      Your browser does not support the video tag.
+    </video>
     
-    <div class="relative z-10 w-full max-w-7xl mx-auto flex">
+    <!-- Overlay for better text readability (for both image and video) -->
+    <div v-if="heroImageUrl || heroVideoUrl" class="absolute inset-0 bg-black/40 z-0"></div>
+    
+    <!-- Grid pattern overlay (fallback when no image or video) -->
+    <div v-if="!heroImageUrl && !heroVideoUrl" class="absolute inset-0 opacity-10 z-0" style="background-image: url('@/assets/pattern-2.png'); background-size: 40px 40px; background-repeat: repeat;"></div>
+    
+    <div class="relative z-20 w-full max-w-7xl mx-auto flex pt-20">
       <!-- Main content -->
       <div class="flex-1">
         <!-- Decorative circles -->
         <div class="flex items-center gap-4 mb-8">
-          <div class="lg:w-16 lg:h-16 w-12 h-12 rounded-full border-2 border-black/20"></div>
-          <div class="lg:w-12 lg:h-12 w-12 h-12 rounded-full border-2 border-black/30"></div>
-          <div class="lg:w-8 lg:h-8 w-8 h-8 rounded-full border-2 border-black/40 relative">
-            <span class="absolute inset-0 flex items-center justify-center text-black text-xl"></span>
+          <div class="lg:w-16 lg:h-16 w-12 h-12 rounded-full border-2 border-white/30 bg-white"></div>
+          <div class="lg:w-12 lg:h-12 w-12 h-12 rounded-full border-2 border-white/40 bg-white"></div>
+          <div class="lg:w-8 lg:h-8 w-8 h-8 rounded-full border-2 border-white/50 relative bg-white">
+            <span class="absolute inset-0 flex items-center justify-center text-white text-xl"></span>
           </div>
         </div>
         
         <!-- Two-part headline -->
-        <h1 class="text-6xl md:text-8xl lg:text-9xl font-medium mb-6 tracking-tight leading-tight">
-          <span class="text-black/40">{{ hero.titlePart1 || 'Discover' }}</span>
-          <span class="text-black block">{{ hero.titlePart2 || 'Innovation' }}</span>
+        <h1 class="text-6xl md:text-8xl lg:text-8xl font-medium mb-6 tracking-tight text-white leading-tight">
+          <span class="text-white">{{ hero.titlePart1 || 'Discover' }}</span>
+          <span class="text-white block">{{ hero.titlePart2 || 'Innovation' }}</span>
         </h1>
         
         <!-- Subtitle -->
-        <p v-if="hero.subtitle" class="text-xl md:text-2xl text-black/90 mb-8 max-w-2xl">
+        <p v-if="hero.subtitle" class="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl">
           {{ hero.subtitle }}
         </p>
-        
-        <!-- CTA Button -->
-        <div v-if="hero.ctaButtons && hero.ctaButtons.length > 0">
-          <a
-            v-for="(button, index) in hero.ctaButtons"
-            :key="index"
-            :href="button.link"
-            class="inline-block bg-black text-white px-8 py-4 rounded-lg border-2 border-black no-underline font-medium transition-all duration-200 hover:bg-white hover:text-black flex items-center gap-2"
-          >
-            {{ button.label }}
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
-        </div>
         
         <!-- Statistics -->
         <div v-if="hero.statistics && hero.statistics.length > 0" class="mt-16 flex gap-12">
           <div v-for="(stat, index) in hero.statistics" :key="index" class="flex flex-col">
-            <span class="text-5xl md:text-6xl font-medium text-black">{{ stat.number }}+</span>
-            <span class="text-lg text-black/80">{{ stat.label }}</span>
+            <span class="text-5xl md:text-6xl font-medium text-white">{{ stat.number }}+</span>
+            <span class="text-lg text-white/80">{{ stat.label }}</span>
           </div>
         </div>
         
         <!-- Availability status -->
         <div v-if="hero.availabilityStatus" class="mt-8 flex items-center gap-2">
-          <span class="w-2 h-2 bg-black rounded-full"></span>
-          <span class="text-black/80">{{ hero.availabilityStatus }}</span>
+          <span class="w-2 h-2 bg-white rounded-full"></span>
+          <span class="text-white/80">{{ hero.availabilityStatus }}</span>
+        </div>
+        
+        <!-- CTA Button at bottom -->
+        <div v-if="hero.ctaButton" class="mt-16 w-full flex">
+          <a
+            :href="hero.ctaButton.link"
+            class="inline-block bg-white text-black px-8 py-4 rounded-lg border-2 border-white no-underline font-medium transition-all duration-200 hover:bg-white/90 flex items-center gap-2"
+          >
+            {{ hero.ctaButton.label }}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
         </div>
       </div>
       
@@ -137,12 +163,12 @@ onMounted(async () => {
           :href="social.url"
           target="_blank"
           rel="noopener noreferrer"
-          class="w-12 h-12 rounded-full border-2 border-black bg-white flex items-center justify-center transition-all duration-200 hover:bg-black group"
+          class="w-12 h-12 rounded-full border-2 border-white/50 bg-white/10 backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:bg-white/20 group"
         >
-          <svg v-if="getSocialIconPath(social.platform)" class="w-6 h-6 fill-black group-hover:fill-white transition-colors" viewBox="0 0 24 24">
+          <svg v-if="getSocialIconPath(social.platform)" class="w-6 h-6 fill-white transition-colors" viewBox="0 0 24 24">
             <path :d="getSocialIconPath(social.platform)" />
           </svg>
-          <span v-else class="text-sm font-bold text-black group-hover:text-white">{{ social.platform.charAt(0).toUpperCase() }}</span>
+          <span v-else class="text-sm font-bold text-white">{{ social.platform.charAt(0).toUpperCase() }}</span>
         </a>
       </div>
     </div>

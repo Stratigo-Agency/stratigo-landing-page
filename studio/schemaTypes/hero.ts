@@ -46,49 +46,49 @@ export default defineType({
           validation: (Rule) => Rule.required(),
         },
       ],
+      description: 'Used as fallback if no video is provided',
     }),
     defineField({
-      name: 'ctaButtons',
-      title: 'Call-to-Action Buttons',
-      type: 'array',
-      of: [
+      name: 'backgroundVideo',
+      title: 'Background Video',
+      type: 'file',
+      options: {
+        accept: 'video/*',
+      },
+      description: 'Video file for background (will override image if provided). Supports MP4, WebM, etc.',
+    }),
+    defineField({
+      name: 'backgroundVideoUrl',
+      title: 'Background Video URL (Alternative)',
+      type: 'url',
+      description: 'Alternative: Direct URL to video (e.g., YouTube, Vimeo, or hosted video). Use this if video is hosted externally.',
+    }),
+    defineField({
+      name: 'ctaButton',
+      title: 'Call-to-Action Button',
+      type: 'object',
+      fields: [
         {
-          type: 'object',
-          fields: [
-            {
-              name: 'label',
-              type: 'string',
-              title: 'Button Label',
-              validation: (Rule) => Rule.required(),
-            },
-            {
-              name: 'link',
-              type: 'string',
-              title: 'Link URL',
-              validation: (Rule) => Rule.required(),
-            },
-            {
-              name: 'variant',
-              type: 'string',
-              title: 'Button Style',
-              options: {
-                list: [
-                  {title: 'Primary', value: 'primary'},
-                  {title: 'Secondary', value: 'secondary'},
-                  {title: 'Outline', value: 'outline'},
-                ],
-              },
-              initialValue: 'primary',
-            },
-          ],
-          preview: {
-            select: {
-              title: 'label',
-              subtitle: 'link',
-            },
-          },
+          name: 'label',
+          type: 'string',
+          title: 'Button Label',
+          description: 'Text displayed on the button',
+          validation: (Rule) => Rule.required(),
+        },
+        {
+          name: 'link',
+          type: 'string',
+          title: 'Link URL',
+          description: 'URL the button links to (e.g., #kontak, /portfolio, https://example.com)',
+          validation: (Rule) => Rule.required(),
         },
       ],
+      preview: {
+        select: {
+          title: 'label',
+          subtitle: 'link',
+        },
+      },
     }),
     defineField({
       name: 'alignment',

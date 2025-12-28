@@ -148,7 +148,7 @@ onMounted(() => {
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
               </div>
-              <span class="text-[10px] md:text-xs font-medium text-black">Social Media</span>
+              <span class="text-[10px] md:text-xs font-light text-black">Social Media</span>
             </div>
           </div>
 
@@ -164,7 +164,7 @@ onMounted(() => {
                   <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                 </svg>
               </div>
-              <span class="text-[10px] md:text-xs font-medium text-black">SEO</span>
+              <span class="text-[10px] md:text-xs font-light text-black">SEO</span>
             </div>
           </div>
 
@@ -180,7 +180,7 @@ onMounted(() => {
                   <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
                 </svg>
               </div>
-              <span class="text-[10px] md:text-xs font-medium text-black text-center">Customer Service</span>
+              <span class="text-[10px] md:text-xs font-light text-black text-center">Customer Service</span>
             </div>
           </div>
 
@@ -204,10 +204,10 @@ onMounted(() => {
 
         <!-- Right Column: Text Content -->
         <div class="order-1 lg:order-2">
-          <h2 class="text-3xl md:text-4xl lg:text-5xl font-medium text-black mb-6 leading-tight">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-black mb-6 leading-tight">
             Website adalah Pusat dan Langkah Awal Fondasi Bisnis Anda di Internet
           </h2>
-          <p class="text-base md:text-lg lg:text-xl text-black/70 leading-relaxed">
+          <p class="text-base md:text-lg lg:text-md text-black/70 leading-relaxed">
             Situs web Anda adalah fondasi terpenting untuk strategi pemasaran online yang sukses. Tidak hanya melalui desain web, tetapi juga melalui konten yang tepat dan pengaturan teknis yang rapi, situs web Anda akan mudah ditemukan oleh mesin pencari dan mampu mengonversi pengunjung menjadi prospek atau permintaan yang bernilai di tempat yang tepat.
           </p>
         </div>
