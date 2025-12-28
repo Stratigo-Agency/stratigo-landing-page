@@ -5,6 +5,7 @@ import { HERO_QUERY, type Hero } from '@/sanity/queries'
 
 const hero = ref<Hero | null>(null)
 const loading = ref(true)
+const error = ref<string | null>(null)
 
 const heroImageUrl = computed(() => {
   if (hero.value?.backgroundImage?.asset) {
@@ -13,15 +14,30 @@ const heroImageUrl = computed(() => {
   return null
 })
 
-const heroAlignment = computed(() => {
-  return hero.value?.alignment || 'left'
-})
+const getSocialIconPath = (platform: string) => {
+  const icons: Record<string, string> = {
+    twitter: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+    instagram: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z',
+    linkedin: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
+    facebook: 'M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'
+  }
+  return icons[platform] || ''
+}
 
 onMounted(async () => {
   try {
-    hero.value = await client.fetch(HERO_QUERY)
+    console.log('Fetching hero content...')
+    const result = await client.fetch(HERO_QUERY)
+    console.log('Hero query result:', result)
+    hero.value = result
+    if (!hero.value) {
+      error.value = 'No hero content found. Please create a hero document in Sanity Studio with isActive set to true.'
+    } else {
+      console.log('Hero data loaded:', hero.value)
+    }
   } catch (e) {
     console.error('Failed to fetch hero content:', e)
+    error.value = e instanceof Error ? e.message : 'Failed to fetch hero content'
   } finally {
     loading.value = false
   }
@@ -29,42 +45,104 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- Loading state -->
+  <section v-if="loading" class="relative min-h-screen flex items-center justify-center bg-white text-black px-6 py-16">
+    <div class="text-center">
+      <p class="text-xl">Loading hero content...</p>
+      <p class="text-sm text-black/60 mt-2">Checking Sanity CMS...</p>
+    </div>
+  </section>
+
+  <!-- Error state -->
+  <section v-else-if="error || !hero" class="relative min-h-screen flex items-center justify-center bg-white text-black px-6 py-16">
+    <div class="text-center">
+      <p class="text-xl mb-4 text-black/60">{{ error || 'No hero content found' }}</p>
+      <p class="text-sm text-black/40 mb-4">Please create a hero document in Sanity Studio with isActive set to true.</p>
+      <div class="mt-8 p-4 bg-black/5 rounded border border-black/10 text-left">
+        <p class="text-sm text-black/80 mb-2">Debug Info:</p>
+        <p class="text-xs text-black/60">Loading: {{ loading }}</p>
+        <p class="text-xs text-black/60">Has Hero: {{ !!hero }}</p>
+        <p class="text-xs text-black/60">Error: {{ error || 'None' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero content -->
   <section 
-    v-if="hero && !loading" 
-    class="relative min-h-[60vh] flex items-center justify-center bg-cover bg-center bg-[var(--card)] px-6 py-4 mb-16"
-    :class="{
-      'text-left': heroAlignment === 'left',
-      'text-center': heroAlignment === 'center',
-      'text-right': heroAlignment === 'right'
-    }"
-    :style="heroImageUrl ? { backgroundImage: `url(${heroImageUrl})` } : {}"
+    v-else-if="hero" 
+    class="relative flex items-center bg-white text-black px-6 py-16"
+    :style="heroImageUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}"
   >
-    <div class="absolute inset-0 bg-gradient-to-b from-[rgba(15,15,15,0.7)] to-[rgba(15,15,15,0.9)] z-[1]"></div>
-    <div class="relative z-[2] w-full">
-      <h1 class="text-6xl md:text-7xl font-bold mb-4 tracking-tight leading-tight">{{ hero.title }}</h1>
-      <h2 v-if="hero.subtitle" class="text-2xl md:text-3xl font-medium mb-4 text-[var(--muted)] leading-snug">{{ hero.subtitle }}</h2>
-      <p v-if="hero.description" class="text-lg md:text-xl leading-relaxed mb-8 text-[rgba(250,250,250,0.9)]">{{ hero.description }}</p>
-      <div 
-        v-if="hero.ctaButtons && hero.ctaButtons.length > 0" 
-        class="flex gap-4 flex-wrap flex-col md:flex-row"
-        :class="{
-          'md:justify-center': heroAlignment === 'center',
-          'md:justify-end': heroAlignment === 'right',
-          'md:justify-start': heroAlignment === 'left'
-        }"
-      >
+    <!-- Grid pattern overlay -->
+    <div v-if="!heroImageUrl" class="absolute inset-0 opacity-10" style="background-image: url('@/assets/pattern-2.png'); background-size: 40px 40px; background-repeat: repeat;"></div>
+    
+    <div class="relative z-10 w-full max-w-7xl mx-auto flex">
+      <!-- Main content -->
+      <div class="flex-1">
+        <!-- Decorative circles -->
+        <div class="flex items-center gap-4 mb-8">
+          <div class="w-16 h-16 rounded-full border-2 border-black/20"></div>
+          <div class="w-12 h-12 rounded-full border-2 border-black/30"></div>
+          <div class="w-8 h-8 rounded-full border-2 border-black/40 relative">
+            <span class="absolute inset-0 flex items-center justify-center text-black text-xl"></span>
+          </div>
+        </div>
+        
+        <!-- Two-part headline -->
+        <h1 class="text-7xl md:text-8xl lg:text-9xl font-medium mb-6 tracking-tight leading-tight">
+          <span class="text-black/40">{{ hero.titlePart1 || 'Discover' }}</span>
+          <span class="text-black block">{{ hero.titlePart2 || 'Innovation' }}</span>
+        </h1>
+        
+        <!-- Subtitle -->
+        <p v-if="hero.subtitle" class="text-xl md:text-2xl text-black/90 mb-8 max-w-2xl">
+          {{ hero.subtitle }}
+        </p>
+        
+        <!-- CTA Button -->
+        <div v-if="hero.ctaButtons && hero.ctaButtons.length > 0">
+          <a
+            v-for="(button, index) in hero.ctaButtons"
+            :key="index"
+            :href="button.link"
+            class="inline-block bg-black text-white px-8 py-4 rounded-lg border-2 border-black no-underline font-medium transition-all duration-200 hover:bg-white hover:text-black flex items-center gap-2"
+          >
+            {{ button.label }}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+        </div>
+        
+        <!-- Statistics -->
+        <div v-if="hero.statistics && hero.statistics.length > 0" class="mt-16 flex gap-12">
+          <div v-for="(stat, index) in hero.statistics" :key="index" class="flex flex-col">
+            <span class="text-5xl md:text-6xl font-medium text-black">{{ stat.number }}+</span>
+            <span class="text-lg text-black/80">{{ stat.label }}</span>
+          </div>
+        </div>
+        
+        <!-- Availability status -->
+        <div v-if="hero.availabilityStatus" class="mt-8 flex items-center gap-2">
+          <span class="w-2 h-2 bg-black rounded-full"></span>
+          <span class="text-black/80">{{ hero.availabilityStatus }}</span>
+        </div>
+      </div>
+      
+      <!-- Social media icons on right -->
+      <div v-if="hero.socialLinks && hero.socialLinks.length > 0" class="flex flex-col gap-4 items-center">
         <a
-          v-for="(button, index) in hero.ctaButtons"
+          v-for="(social, index) in hero.socialLinks"
           :key="index"
-          :href="button.link"
-          class="inline-block px-8 py-3.5 text-base font-medium no-underline rounded-md transition-all duration-200 cursor-pointer border-2 w-full md:w-auto text-center"
-          :class="{
-            'bg-[var(--accent)] text-[var(--fg)] border-transparent hover:bg-[#e11d48] hover:-translate-y-0.5': button.variant === 'primary' || !button.variant,
-            'bg-[var(--card)] text-[var(--fg)] border-[var(--muted)] hover:bg-[#252525] hover:border-[var(--fg)]': button.variant === 'secondary',
-            'bg-transparent text-[var(--fg)] border-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)]': button.variant === 'outline'
-          }"
+          :href="social.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-12 h-12 rounded-full border-2 border-black bg-white flex items-center justify-center transition-all duration-200 hover:bg-black group"
         >
-          {{ button.label }}
+          <svg v-if="getSocialIconPath(social.platform)" class="w-6 h-6 fill-black group-hover:fill-white transition-colors" viewBox="0 0 24 24">
+            <path :d="getSocialIconPath(social.platform)" />
+          </svg>
+          <span v-else class="text-sm font-bold text-black group-hover:text-white">{{ social.platform.charAt(0).toUpperCase() }}</span>
         </a>
       </div>
     </div>
