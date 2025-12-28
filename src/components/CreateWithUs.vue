@@ -45,7 +45,7 @@ onMounted(async () => {
               {{ item.title }}
             </h2>
             <p class="text-base lg:text-lg text-white/90 leading-relaxed">
-              <span v-if="item.highlight" class="font-medium text-white">{{ item.highlight }}. </span>
+              <span v-if="item.highlight" class="font-medium text-white">{{ item.highlight }} </span>
               <span v-if="item.highlight && item.description"> </span>
               <span v-if="item.description">{{ item.description }}</span>
             </p>

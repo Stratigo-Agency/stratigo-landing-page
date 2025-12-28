@@ -6,7 +6,8 @@
         ? 'bg-white border-b border-black/10' 
         : windowWidth >= 1024 
           ? 'bg-transparent border-b border-transparent' 
-          : 'bg-white border-b border-black/10'
+          : 'bg-white border-b border-black/10',
+      isNavHidden && !isMenuOpen ? '-translate-y-full' : 'translate-y-0'
     ]"
   >
     <div class="px-6 py-4">
@@ -170,6 +171,8 @@ import logoWhite from '@/assets/logos/stratigo-logo-white.webp'
 
 const isMenuOpen = ref(false)
 const isScrolledPastHero = ref(false)
+const isNavHidden = ref(false)
+const lastScrollY = ref(0)
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024)
 
 const route = useRoute()
@@ -190,12 +193,29 @@ const closeMenu = () => {
 }
 
 const handleScroll = () => {
-  // Only check on desktop and when on home page
+  const currentScrollY = window.scrollY
+  const viewportHeight = window.innerHeight
+  
+  // Check scroll direction - hide on scroll down, show on scroll up
+  // Only start hiding after scrolling past a threshold (e.g., 100px)
+  if (currentScrollY > 100) {
+    if (currentScrollY > lastScrollY.value) {
+      // Scrolling down - hide navbar
+      isNavHidden.value = true
+    } else {
+      // Scrolling up - show navbar
+      isNavHidden.value = false
+    }
+  } else {
+    // At the top - always show navbar
+    isNavHidden.value = false
+  }
+  
+  lastScrollY.value = currentScrollY
+  
+  // Check if scrolled past hero for background change (desktop only, home page)
   if (windowWidth.value >= 1024 && route.path === '/') {
-    // Hero is h-screen, so check if scrolled past viewport height
-    const scrollY = window.scrollY
-    const viewportHeight = window.innerHeight
-    isScrolledPastHero.value = scrollY > viewportHeight * 0.8 // Trigger slightly before full scroll
+    isScrolledPastHero.value = currentScrollY > viewportHeight * 0.8
   } else {
     // On other pages or mobile, always show white background
     isScrolledPastHero.value = true
