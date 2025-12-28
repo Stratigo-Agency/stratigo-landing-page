@@ -81,15 +81,15 @@ onMounted(async () => {
       <div class="flex-1">
         <!-- Decorative circles -->
         <div class="flex items-center gap-4 mb-8">
-          <div class="w-16 h-16 rounded-full border-2 border-black/20"></div>
-          <div class="w-12 h-12 rounded-full border-2 border-black/30"></div>
-          <div class="w-8 h-8 rounded-full border-2 border-black/40 relative">
+          <div class="lg:w-16 lg:h-16 w-12 h-12 rounded-full border-2 border-black/20"></div>
+          <div class="lg:w-12 lg:h-12 w-12 h-12 rounded-full border-2 border-black/30"></div>
+          <div class="lg:w-8 lg:h-8 w-8 h-8 rounded-full border-2 border-black/40 relative">
             <span class="absolute inset-0 flex items-center justify-center text-black text-xl"></span>
           </div>
         </div>
         
         <!-- Two-part headline -->
-        <h1 class="text-7xl md:text-8xl lg:text-9xl font-medium mb-6 tracking-tight leading-tight">
+        <h1 class="text-6xl md:text-8xl lg:text-9xl font-medium mb-6 tracking-tight leading-tight">
           <span class="text-black/40">{{ hero.titlePart1 || 'Discover' }}</span>
           <span class="text-black block">{{ hero.titlePart2 || 'Innovation' }}</span>
         </h1>

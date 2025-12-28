@@ -64,6 +64,22 @@ export interface CaseStudy {
   isActive?: boolean
 }
 
+export interface Deliverable {
+  _id: string
+  title: string
+  highlight?: string
+  description?: string
+  image: {
+    asset: {
+      _ref: string
+      _type: string
+    }
+    alt?: string | null
+  }
+  order?: number
+  isActive?: boolean
+}
+
 // Queries
 export const POSTS_QUERY = defineQuery(/* groq */ `
   *[_type == "post"] | order(_createdAt desc) {
@@ -117,6 +133,21 @@ export const CASE_STUDIES_QUERY = `
     backgroundColor,
     isFeatured,
     link,
+    order,
+    isActive
+  }
+`
+
+export const DELIVERABLES_QUERY = `
+  *[_type == "deliverable" && (!defined(isActive) || isActive == true)] | order(order asc, _createdAt desc) {
+    _id,
+    title,
+    highlight,
+    description,
+    image {
+      asset,
+      alt
+    },
     order,
     isActive
   }
