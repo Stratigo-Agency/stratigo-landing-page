@@ -81,7 +81,7 @@ onMounted(async () => {
   <!-- Hero content -->
   <section 
     v-else-if="hero" 
-    class="relative flex items-center bg-white text-black px-6 pb-16 overflow-hidden h-screen"
+    class="relative flex items-center bg-white text-black px-6 py-16 overflow-hidden h-screen"
     :style="heroImageUrl && !heroVideoUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}"
   >
     <!-- Background Video -->
@@ -109,15 +109,15 @@ onMounted(async () => {
       <div class="flex-1">
         <!-- Decorative circles -->
         <div class="flex items-center gap-4 mb-8">
-          <div class="lg:w-16 lg:h-16 w-12 h-12 rounded-full border-2 border-white/30 bg-white"></div>
-          <div class="lg:w-12 lg:h-12 w-12 h-12 rounded-full border-2 border-white/40 bg-white"></div>
+          <div class="lg:w-16 lg:h-16 w-8 h-8 rounded-full border-2 border-white/30 bg-white"></div>
+          <div class="lg:w-12 lg:h-12 w-8 h-8 rounded-full border-2 border-white/40 bg-white"></div>
           <div class="lg:w-8 lg:h-8 w-8 h-8 rounded-full border-2 border-white/50 relative bg-white">
             <span class="absolute inset-0 flex items-center justify-center text-white text-xl"></span>
           </div>
         </div>
         
         <!-- Two-part headline -->
-        <h1 class="text-6xl md:text-8xl lg:text-8xl font-medium mb-6 tracking-tight text-white leading-tight">
+        <h1 class="text-5xl md:text-8xl lg:text-8xl font-medium mb-6 tracking-tight text-white leading-tight">
           <span class="text-white">{{ hero.titlePart1 || 'Discover' }}</span>
           <span class="text-white block">{{ hero.titlePart2 || 'Innovation' }}</span>
         </h1>
