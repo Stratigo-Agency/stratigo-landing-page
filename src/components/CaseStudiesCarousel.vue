@@ -46,7 +46,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section v-if="!loading && caseStudies.length > 0" class="py-16 px-6 bg-white">
+  <section v-if="!loading && caseStudies.length > 0" class="py-16 md:px-6 bg-white">
     <div>
       <!-- Bento Grid Layout -->
       <div class="flex flex-col gap-8">
@@ -54,7 +54,7 @@ onMounted(async () => {
         <!-- Featured Case Study (Large) -->
         <div 
           v-if="featuredStudy" 
-          class="grid grid-cols-1 lg:grid-cols-2 overflow-hidden min-h-[400px] lg:min-h-[500px] rounded-xl overflow-hidden"
+          class="grid grid-cols-1 lg:grid-cols-2 overflow-hidden min-h-[400px] lg:min-h-[500px] rounded-xl overflow-hidden mx-6"
         >
           <!-- Left: Text Content with dark background -->
           <div class="bg-gray-100 p-8 lg:p-12 flex flex-col justify-center order-2 lg:order-1">
@@ -90,15 +90,15 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- Smaller Case Studies Grid -->
+        <!-- Smaller Case Studies - Horizontal scroll on mobile, grid on desktop -->
         <div 
           v-if="remainingStudies.length > 0" 
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          class="ml-6 flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4 md:mx-0 md:px-6 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:pb-0 md:overflow-visible scrollbar-hide"
         >
           <div
             v-for="caseStudy in remainingStudies"
             :key="caseStudy._id"
-            class="group cursor-pointer"
+            class="group cursor-pointer flex-shrink-0 w-[80vw] snap-start md:w-auto"
           >
             <!-- Image -->
             <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
@@ -126,9 +126,21 @@ onMounted(async () => {
               </p>
             </div>
           </div>
+          <!-- Spacer for right padding on mobile -->
+          <div class="flex-shrink-0 w-4 md:hidden" aria-hidden="true"></div>
         </div>
 
       </div>
     </div>
   </section>
 </template>
+
+<style scoped>
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+</style>

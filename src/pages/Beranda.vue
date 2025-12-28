@@ -12,7 +12,7 @@
         <Deliverables />
     </div>
     <div>
-        <h1  class="text-4xl md:text-6xl text-black font-light text-center">Ciptakan keperluan bisnis Anda</h1>
+        <h1  class="text-4xl md:text-6xl text-black font-light text-center px-6">Ciptakan keperluan bisnis Anda</h1>
         <CreateWithUs />
     </div>
     <CTA />
