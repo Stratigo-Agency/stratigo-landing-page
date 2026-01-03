@@ -42,6 +42,12 @@ const scrollToPricing = () => {
   }
 }
 
+const openCalendarModal = () => {
+  // Open Google Calendar scheduling page in a new window
+  const calendarUrl = 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3NKajXy840Ut9Zflq5snuW5sQslGYsAbqdai5WmP8JqV2MJo6HvEUwqUZrSEYzvj3lx5gZlg4j?gv=true'
+  window.open(calendarUrl, '_blank', 'width=800,height=600')
+}
+
 onMounted(async () => {
   try {
     console.log('Fetching hero content...')
@@ -167,6 +173,15 @@ onMounted(async () => {
             Paket Kami
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <button
+            @click="openCalendarModal"
+            class="inline-block bg-transparent text-white px-8 py-4 rounded-lg border-2 border-white/50 font-medium transition-all duration-200 hover:bg-white/10 hover:border-white flex items-center justify-center gap-2"
+          >
+            Booking Konsultasi Gratis
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </button>
         </div>
