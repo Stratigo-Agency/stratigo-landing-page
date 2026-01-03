@@ -27,14 +27,17 @@ const getImageAlt = (pkg: PricingPackage): string => {
 const handleScroll = () => {
   if (!carouselRef.value) return
   const scrollLeft = carouselRef.value.scrollLeft
-  const cardWidth = 320 + 16 // card width + gap
+  // Calculate card width dynamically based on viewport
+  const cardElement = carouselRef.value.querySelector('.pricing-card-mobile') as HTMLElement
+  const cardWidth = cardElement ? cardElement.offsetWidth + 16 : 320 + 16 // card width + gap
   currentSlide.value = Math.round(scrollLeft / cardWidth)
 }
 
 // Scroll to specific slide
 const scrollToSlide = (index: number) => {
   if (!carouselRef.value) return
-  const cardWidth = 320 + 16
+  const cardElement = carouselRef.value.querySelector('.pricing-card-mobile') as HTMLElement
+  const cardWidth = cardElement ? cardElement.offsetWidth + 16 : 320 + 16
   carouselRef.value.scrollTo({
     left: index * cardWidth,
     behavior: 'smooth'
@@ -135,7 +138,7 @@ onMounted(async () => {
           <div
             v-for="pkg in pricingPackages"
             :key="pkg._id"
-            class="pricing-card-mobile flex-shrink-0 snap-center flex flex-col overflow-hidden rounded-xl bg-white border-2"
+            class="pricing-card-mobile flex-shrink-0 w-[85vw] max-w-[320px] snap-center flex flex-col overflow-hidden rounded-xl bg-white border-2"
             :class="pkg.isPopular ? 'border-black' : 'border-gray-200'"
           >
             <!-- Image (optional) -->
@@ -261,4 +264,3 @@ onMounted(async () => {
   }
 }
 </style>
-x-2
