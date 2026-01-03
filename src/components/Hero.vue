@@ -35,6 +35,13 @@ const getSocialIconPath = (platform: string) => {
   return icons[platform] || ''
 }
 
+const scrollToPricing = () => {
+  const pricingElement = document.getElementById('pricing')
+  if (pricingElement) {
+    pricingElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
 onMounted(async () => {
   try {
     console.log('Fetching hero content...')
@@ -141,17 +148,27 @@ onMounted(async () => {
           <span class="text-white/80">{{ hero.availabilityStatus }}</span>
         </div>
         
-        <!-- CTA Button at bottom -->
-        <div v-if="hero.ctaButton" class="mt-16 w-full flex">
+        <!-- CTA Buttons at bottom -->
+        <div class="mt-16 w-full flex flex-col sm:flex-row gap-4">
           <a
+            v-if="hero.ctaButton"
             :href="hero.ctaButton.link"
-            class="inline-block bg-white text-black px-8 py-4 rounded-lg border-2 border-white no-underline font-medium transition-all duration-200 hover:bg-white/90 flex items-center gap-2"
+            class="inline-block bg-white text-black px-8 py-4 rounded-lg border-2 border-white no-underline font-medium transition-all duration-200 hover:bg-white/90 flex items-center justify-center gap-2"
           >
             {{ hero.ctaButton.label }}
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </a>
+          <button
+            @click="scrollToPricing"
+            class="inline-block bg-transparent text-white px-8 py-4 rounded-lg border-2 border-white/50 font-medium transition-all duration-200 hover:bg-white/10 hover:border-white flex items-center justify-center gap-2"
+          >
+            Paket Kami
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
         </div>
       </div>
       
