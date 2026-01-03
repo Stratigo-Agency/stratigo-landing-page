@@ -28,7 +28,7 @@ onMounted(async () => {
 <template>
   <section 
     v-if="!loading && cta" 
-    class="relative h-[50vh] py-20 px-6 bg-white overflow-hidden"
+    class="relative h-[60vh] py-20 px-6 bg-white overflow-hidden"
   >
     <!-- Background Image -->
     <div 

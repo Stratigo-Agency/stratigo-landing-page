@@ -62,31 +62,31 @@ onMounted(async () => {
           v-for="pkg in pricingPackages"
           :key="pkg._id"
           class="pricing-card group relative flex flex-col overflow-hidden rounded-lg transition-all duration-500 bg-white border-2"
-          :class="pkg.isPopular ? 'border-black scale-105' : 'border-gray-200'"
+          :class="pkg.isPopular ? 'border-black' : 'border-gray-200'"
         >
-          <!-- Popular Badge -->
-          <div
-            v-if="pkg.isPopular"
-            class="absolute top-0 right-0 bg-black text-white px-4 py-1 text-sm font-medium z-10 rounded-bl-lg"
-          >
-            Popular
-          </div>
-
           <!-- Image (optional) -->
-          <div v-if="getImageUrl(pkg)" class="relative w-full h-80 overflow-hidden bg-gray-100">
+          <div v-if="getImageUrl(pkg)" class="relative w-full h-80 overflow-hidden bg-gray-100 rounded-t-lg flex items-center justify-center">
             <img
               :src="getImageUrl(pkg)"
               :alt="getImageAlt(pkg)"
-              class="w-full h-full object-cover transition-transform duration-700"
+              class="w-full h-full object-contain transition-transform duration-700"
             />
           </div>
 
           <!-- Content -->
           <div class="flex flex-col flex-grow p-6">
-            <!-- Package Name -->
-            <h3 class="text-3xl lg:text-4xl font-medium text-black mb-2 tracking-tight">
-              {{ pkg.packageName }}
-            </h3>
+            <!-- Package Name with Popular Badge -->
+            <div class="flex items-center gap-3 mb-2">
+              <h3 class="text-3xl lg:text-4xl font-medium text-black tracking-tight">
+                {{ pkg.packageName }}
+              </h3>
+              <span
+                v-if="pkg.isPopular"
+                class="bg-black text-white px-3 py-1 text-xs font-medium rounded-full"
+              >
+                Popular
+              </span>
+            </div>
 
             <!-- Price -->
             <div class="mb-6">
@@ -135,32 +135,32 @@ onMounted(async () => {
           <div
             v-for="pkg in pricingPackages"
             :key="pkg._id"
-            class="pricing-card-mobile flex-shrink-0 w-[320px] snap-center flex flex-col overflow-hidden rounded-xl bg-white border-2 relative"
-            :class="pkg.isPopular ? 'border-black shadow-lg scale-105' : 'border-gray-200'"
+            class="pricing-card-mobile flex-shrink-0 snap-center flex flex-col overflow-hidden rounded-xl bg-white border-2"
+            :class="pkg.isPopular ? 'border-black' : 'border-gray-200'"
           >
-            <!-- Popular Badge -->
-            <div
-              v-if="pkg.isPopular"
-              class="absolute top-0 right-0 bg-black text-white px-3 py-1 text-xs font-medium z-10 rounded-bl-lg"
-            >
-              Popular
-            </div>
-
             <!-- Image (optional) -->
-            <div v-if="getImageUrl(pkg)" class="relative w-full h-40 overflow-hidden bg-gray-100">
+            <div v-if="getImageUrl(pkg)" class="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-t-xl flex items-center justify-center">
               <img
                 :src="getImageUrl(pkg)"
                 :alt="getImageAlt(pkg)"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-contain"
               />
             </div>
 
             <!-- Content -->
             <div class="flex flex-col flex-grow p-5">
-              <!-- Package Name -->
-              <h3 class="text-2xl font-medium text-black mb-2 tracking-tight">
-                {{ pkg.packageName }}
-              </h3>
+              <!-- Package Name with Popular Badge -->
+              <div class="flex items-center gap-2 mb-2">
+                <h3 class="text-2xl font-medium text-black tracking-tight">
+                  {{ pkg.packageName }}
+                </h3>
+                <span
+                  v-if="pkg.isPopular"
+                  class="bg-black text-white px-2 py-0.5 text-xs font-medium rounded-full"
+                >
+                  Popular
+                </span>
+              </div>
 
               <!-- Price -->
               <div class="mb-4">
@@ -249,5 +249,16 @@ onMounted(async () => {
 .pricing-card-mobile {
   min-height: 500px;
 }
-</style>
 
+/* Ensure border respects border-radius */
+.pricing-card-mobile {
+  border-radius: 0.75rem !important; /* rounded-xl for mobile */
+}
+
+@media (min-width: 768px) {
+  .pricing-card {
+    border-radius: 0.5rem !important; /* rounded-lg for desktop */
+  }
+}
+</style>
+x-2

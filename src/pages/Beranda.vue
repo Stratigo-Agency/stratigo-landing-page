@@ -1,14 +1,16 @@
 <template>
-  <div class="bg-white flex flex-col gap-16">
+  <div class="bg-white flex flex-col">
     <Hero />
     <div>
-        <h1 class="text-4xl md:text-6xl text-black font-light text-center">{{ pageSections?.caseStudiesTitle || 'Website yang Bekerja untuk-Mu' }}</h1>
+        <h1 class="text-4xl md:text-6xl text-black font-light text-center pt-16">{{ pageSections?.caseStudiesTitle || 'Website yang Bekerja untuk-Mu' }}</h1>
         <CaseStudiesCarousel />
     </div>
    
     <VisualizeCenter />
-    <Pricing />
-
+    <div>
+        <h1 class="text-4xl md:text-6xl text-black font-light text-center text-black pt-16">Paket Terbaik untukmu</h1>
+        <Pricing />
+    </div>
     <div>
         <h1 class="text-4xl md:text-6xl text-black font-light text-center bg-black text-white pt-16">{{ pageSections?.deliverablesTitle || 'Apa kelebihan website kami?' }}</h1>
         <Deliverables />
