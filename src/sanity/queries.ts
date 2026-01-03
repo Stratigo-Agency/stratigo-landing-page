@@ -123,6 +123,40 @@ export interface CTA {
   isActive?: boolean
 }
 
+export interface PageSections {
+  _id: string
+  caseStudiesTitle: string
+  deliverablesTitle: string
+  createWithUsTitle: string
+  isActive?: boolean
+}
+
+export interface PricingFeature {
+  feature: string
+  description?: string
+}
+
+export interface PricingPackage {
+  _id: string
+  packageName: string
+  image?: {
+    asset: {
+      _ref: string
+      _type: string
+    }
+    alt?: string | null
+  }
+  price: string
+  features: PricingFeature[]
+  isPopular?: boolean
+  ctaButton?: {
+    label: string
+    link: string
+  }
+  order?: number
+  isActive?: boolean
+}
+
 // Queries
 export const POSTS_QUERY = defineQuery(/* groq */ `
   *[_type == "post"] | order(_createdAt desc) {
@@ -229,6 +263,39 @@ export const CTA_QUERY = `
       asset,
       alt
     },
+    isActive
+  }
+`
+
+export const PAGE_SECTIONS_QUERY = `
+  *[_type == "pageSections" && (!defined(isActive) || isActive == true)] | order(_createdAt desc) [0] {
+    _id,
+    caseStudiesTitle,
+    deliverablesTitle,
+    createWithUsTitle,
+    isActive
+  }
+`
+
+export const PRICING_PACKAGES_QUERY = `
+  *[_type == "pricingPackage" && (!defined(isActive) || isActive == true)] | order(order asc, _createdAt desc) {
+    _id,
+    packageName,
+    image {
+      asset,
+      alt
+    },
+    price,
+    features[] {
+      feature,
+      description
+    },
+    isPopular,
+    ctaButton {
+      label,
+      link
+    },
+    order,
     isActive
   }
 `

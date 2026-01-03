@@ -10,6 +10,6 @@ import Footer from '@/components/Footer.vue'
       <router-view />
     </main>
     <Footer />
-  </div>
+    </div>
 </template>
 

@@ -66,29 +66,29 @@ export default defineType({
     defineField({
       name: 'ctaButton',
       title: 'Call-to-Action Button',
-      type: 'object',
-      fields: [
-        {
-          name: 'label',
-          type: 'string',
-          title: 'Button Label',
+          type: 'object',
+          fields: [
+            {
+              name: 'label',
+              type: 'string',
+              title: 'Button Label',
           description: 'Text displayed on the button',
-          validation: (Rule) => Rule.required(),
-        },
-        {
-          name: 'link',
-          type: 'string',
-          title: 'Link URL',
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: 'link',
+              type: 'string',
+              title: 'Link URL',
           description: 'URL the button links to (e.g., #kontak, /portfolio, https://example.com)',
-          validation: (Rule) => Rule.required(),
-        },
-      ],
-      preview: {
-        select: {
-          title: 'label',
-          subtitle: 'link',
-        },
-      },
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: {
+              title: 'label',
+              subtitle: 'link',
+            },
+          },
     }),
     defineField({
       name: 'alignment',
