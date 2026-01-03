@@ -3,6 +3,7 @@ import Beranda from '@/pages/Beranda.vue'
 import TentangKami from '@/pages/TentangKami.vue'
 import Portfolio from '@/pages/Portfolio.vue'
 import Kontak from '@/pages/Kontak.vue'
+import Contact from '@/pages/Contact.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/kontak',
       name: 'Kontak',
       component: Kontak
+    },
+    {
+      path: '/contact',
+      name: 'Contact',
+      component: Contact
     }
   ]
 })

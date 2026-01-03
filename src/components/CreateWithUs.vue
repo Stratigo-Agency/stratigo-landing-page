@@ -10,7 +10,7 @@ const carouselRef = ref<HTMLElement | null>(null)
 
 const getImageUrl = (item: CreateWithUs, width = 600, height = 800): string | undefined => {
   if (item.image?.asset) {
-    return urlFor(item.image).width(width).height(height).quality(85).url()
+    return urlFor(item.image).width(width).height(height).quality(50).url()
   }
   return undefined
 }

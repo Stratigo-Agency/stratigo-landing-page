@@ -2,11 +2,9 @@
   <nav 
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
     :class="[
-      isScrolledPastHero && windowWidth >= 1024 
+      isScrolledPastHero 
         ? 'bg-white border-b border-black/10' 
-        : windowWidth >= 1024 
-          ? 'bg-transparent border-b border-transparent' 
-          : 'bg-white border-b border-black/10',
+        : 'bg-transparent border-b border-transparent',
       isNavHidden && !isMenuOpen ? '-translate-y-full' : 'translate-y-0'
     ]"
   >
@@ -17,7 +15,7 @@
           <img 
             :src="logoPath" 
             alt="Stratigo" 
-            class="h-8 md:h-12 transition-opacity duration-300" 
+            class="h-8 md:h-8 transition-opacity duration-300" 
           />
         </router-link>
         
@@ -32,6 +30,14 @@
               active-class="text-black"
             >
               Beranda
+            </router-link>
+            <router-link 
+              to="/contact" 
+              class="no-underline font-medium transition-colors duration-200"
+              :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+              active-class="text-black"
+            >
+              Contact
             </router-link>
             <!-- Hidden for now
             <router-link 
@@ -62,10 +68,8 @@
           </div>
           
           <!-- CTA Button on right -->
-          <a 
-            href="https://wa.me/6281234567890" 
-            target="_blank"
-            rel="noopener noreferrer"
+          <router-link 
+            to="/contact"
             class="px-6 py-3 rounded-lg border-2 no-underline font-medium transition-all duration-200 flex items-center gap-2"
             :class="isScrolledPastHero 
               ? 'bg-black text-white border-black hover:bg-white hover:text-black' 
@@ -75,13 +79,14 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
-          </a>
+          </router-link>
         </div>
 
         <!-- Mobile Hamburger Button -->
         <button
           @click="toggleMenu"
-          class="lg:hidden p-2 text-black focus:outline-none"
+          class="lg:hidden p-2 focus:outline-none transition-colors duration-200"
+          :class="isScrolledPastHero ? 'text-black' : 'text-white'"
           aria-label="Toggle menu"
         >
           <svg 
@@ -108,16 +113,27 @@
       <!-- Mobile Menu -->
       <div
         v-if="isMenuOpen"
-        class="lg:hidden mt-4 pb-4 border-t border-black/10"
+        class="lg:hidden mt-4 pb-4 border-t transition-colors duration-200"
+        :class="isScrolledPastHero ? 'border-black/10' : 'border-white/20'"
       >
         <div class="flex flex-col gap-4 pt-4">
           <router-link 
             to="/" 
             @click="closeMenu"
-            class="text-black no-underline font-medium transition-colors duration-200 hover:text-black/70 py-2"
+            class="no-underline font-medium transition-colors duration-200 py-2"
+            :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
             active-class="text-black"
           >
             Beranda
+          </router-link>
+          <router-link 
+            to="/contact" 
+            @click="closeMenu"
+            class="no-underline font-medium transition-colors duration-200 py-2"
+            :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+            active-class="text-black"
+          >
+            Contact
           </router-link>
           <!-- Hidden for now
           <router-link 
@@ -145,10 +161,8 @@
             Kontak
           </router-link>
           -->
-          <a 
-            href="https://wa.me/6281234567890" 
-            target="_blank"
-            rel="noopener noreferrer"
+          <router-link 
+            to="/contact"
             @click="closeMenu"
             class="bg-black text-white px-6 py-3 rounded-lg border-2 border-black no-underline font-medium transition-all duration-200 hover:bg-white hover:text-black flex items-center justify-center gap-2 mt-2"
           >
@@ -156,7 +170,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
-          </a>
+          </router-link>
         </div>
       </div>
     </div>
@@ -164,7 +178,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import logoBlack from '@/assets/logos/stratigo-logo-black.webp'
 import logoWhite from '@/assets/logos/stratigo-logo-white.webp'
@@ -178,7 +192,7 @@ const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024
 const route = useRoute()
 
 const logoPath = computed(() => {
-  if (isScrolledPastHero.value || windowWidth.value < 1024) {
+  if (isScrolledPastHero.value) {
     return logoBlack
   }
   return logoWhite
@@ -213,11 +227,14 @@ const handleScroll = () => {
   
   lastScrollY.value = currentScrollY
   
-  // Check if scrolled past hero for background change (desktop only, home page)
-  if (windowWidth.value >= 1024 && route.path === '/') {
+  // Check if scrolled past hero for background change (home page only)
+  if (route.path === '/') {
     isScrolledPastHero.value = currentScrollY > viewportHeight * 0.8
+  } else if (route.path === '/contact') {
+    // On contact page, always show white background immediately
+    isScrolledPastHero.value = true
   } else {
-    // On other pages or mobile, always show white background
+    // On other pages, always show white background
     isScrolledPastHero.value = true
   }
 }
@@ -227,6 +244,16 @@ const handleResize = () => {
   // Re-check scroll state on resize
   handleScroll()
 }
+
+// Watch for route changes to update navbar immediately
+watch(() => route.path, (newPath) => {
+  if (newPath === '/contact' || newPath !== '/') {
+    isScrolledPastHero.value = true
+  } else {
+    // Reset for home page
+    handleScroll()
+  }
+}, { immediate: true })
 
 onMounted(() => {
   if (typeof window !== 'undefined') {

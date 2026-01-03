@@ -11,10 +11,6 @@
         <h1 class="text-4xl md:text-6xl text-black font-light text-center text-black pt-16">Paket Terbaik untukmu</h1>
         <Pricing />
     </div>
-    <div>
-        <h1 class="text-4xl md:text-6xl text-black font-light text-center bg-black text-white pt-16">{{ pageSections?.deliverablesTitle || 'Apa kelebihan website kami?' }}</h1>
-        <Deliverables />
-    </div>
     <CTA />
   </div>
 </template>

@@ -6,17 +6,10 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'titlePart1',
-      title: 'Title Part 1 (Faded)',
+      name: 'title',
+      title: 'Title',
       type: 'string',
-      description: 'First part of the headline (will appear faded)',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'titlePart2',
-      title: 'Title Part 2 (Bright)',
-      type: 'string',
-      description: 'Second part of the headline (will appear bright white)',
+      description: 'Main headline text (e.g., "Create Beautiful Websites.")',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -24,63 +17,105 @@ export default defineType({
       title: 'Subtitle',
       type: 'text',
       rows: 2,
+      description: 'Optional subtitle text below the main title',
     }),
     defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'text',
-      rows: 4,
-    }),
-    defineField({
-      name: 'backgroundImage',
-      title: 'Background Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-      fields: [
+      name: 'imageGallery',
+      title: 'Image Gallery',
+      type: 'array',
+      of: [
         {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-          validation: (Rule) => Rule.required(),
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'image',
+              title: 'Image',
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
+              fields: [
+                {
+                  name: 'alt',
+                  type: 'string',
+                  title: 'Alternative Text',
+                  validation: (Rule) => Rule.required(),
+                },
+              ],
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'orientation',
+              title: 'Orientation',
+              type: 'string',
+              options: {
+                list: [
+                  {title: 'Portrait', value: 'portrait'},
+                  {title: 'Landscape', value: 'landscape'},
+                ],
+              },
+              initialValue: 'landscape',
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+          preview: {
+            select: {
+              media: 'image',
+              orientation: 'orientation',
+            },
+            prepare({media, orientation}) {
+              return {
+                title: orientation === 'portrait' ? 'Portrait' : 'Landscape',
+                media,
+              }
+            },
+          },
         },
       ],
-      description: 'Used as fallback if no video is provided',
+      description: 'Gallery of images that will overflow the edges',
+      validation: (Rule) => Rule.min(1).required(),
     }),
     defineField({
-      name: 'backgroundVideo',
-      title: 'Background Video',
-      type: 'file',
-      options: {
-        accept: 'video/*',
-      },
-      description: 'Video file for background (will override image if provided). Supports MP4, WebM, etc.',
-    }),
-    defineField({
-      name: 'backgroundVideoUrl',
-      title: 'Background Video URL (Alternative)',
-      type: 'url',
-      description: 'Alternative: Direct URL to video (e.g., YouTube, Vimeo, or hosted video). Use this if video is hosted externally.',
-    }),
-    defineField({
-      name: 'ctaButton',
-      title: 'Call-to-Action Button',
+      name: 'ctaButtons',
+      title: 'CTA Buttons',
+      type: 'array',
+      of: [
+        {
           type: 'object',
           fields: [
             {
               name: 'label',
               type: 'string',
               title: 'Button Label',
-          description: 'Text displayed on the button',
+              description: 'Text displayed on the button',
               validation: (Rule) => Rule.required(),
             },
             {
               name: 'link',
               type: 'string',
               title: 'Link URL',
-          description: 'URL the button links to (e.g., #kontak, /portfolio, https://example.com)',
+              description: 'URL the button links to (e.g., /contact, /portfolio, https://example.com)',
               validation: (Rule) => Rule.required(),
+            },
+            {
+              name: 'isExternal',
+              type: 'boolean',
+              title: 'External Link',
+              description: 'Check if this is an external link (opens in new tab)',
+              initialValue: false,
+            },
+            {
+              name: 'variant',
+              type: 'string',
+              title: 'Button Variant',
+              options: {
+                list: [
+                  {title: 'Primary (Black)', value: 'primary'},
+                  {title: 'Secondary (White)', value: 'secondary'},
+                  {title: 'Outline (Transparent)', value: 'outline'},
+                ],
+              },
+              initialValue: 'primary',
             },
           ],
           preview: {
@@ -89,19 +124,9 @@ export default defineType({
               subtitle: 'link',
             },
           },
-    }),
-    defineField({
-      name: 'alignment',
-      title: 'Content Alignment',
-      type: 'string',
-      options: {
-        list: [
-          {title: 'Left', value: 'left'},
-          {title: 'Center', value: 'center'},
-          {title: 'Right', value: 'right'},
-        ],
-      },
-      initialValue: 'left',
+        },
+      ],
+      description: 'Call-to-action buttons displayed below the text',
     }),
     defineField({
       name: 'isActive',
@@ -110,74 +135,11 @@ export default defineType({
       description: 'Toggle to show/hide this hero section',
       initialValue: true,
     }),
-    defineField({
-      name: 'statistics',
-      title: 'Statistics',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            {
-              name: 'number',
-              type: 'string',
-              title: 'Number',
-              validation: (Rule) => Rule.required(),
-            },
-            {
-              name: 'label',
-              type: 'string',
-              title: 'Label',
-              validation: (Rule) => Rule.required(),
-            },
-          ],
-        },
-      ],
-    }),
-    defineField({
-      name: 'socialLinks',
-      title: 'Social Media Links',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            {
-              name: 'platform',
-              type: 'string',
-              title: 'Platform',
-              options: {
-                list: [
-                  {title: 'Twitter/X', value: 'twitter'},
-                  {title: 'Instagram', value: 'instagram'},
-                  {title: 'LinkedIn', value: 'linkedin'},
-                  {title: 'Facebook', value: 'facebook'},
-                ],
-              },
-              validation: (Rule) => Rule.required(),
-            },
-            {
-              name: 'url',
-              type: 'url',
-              title: 'URL',
-              validation: (Rule) => Rule.required(),
-            },
-          ],
-        },
-      ],
-    }),
-    defineField({
-      name: 'availabilityStatus',
-      title: 'Availability Status',
-      type: 'string',
-      description: 'Status text to display (e.g., "Available Now")',
-    }),
   ],
   preview: {
     select: {
-      title: 'titlePart1',
-      subtitle: 'titlePart2',
-      media: 'backgroundImage',
+      title: 'title',
+      media: 'imageGallery.0',
     },
   },
 })

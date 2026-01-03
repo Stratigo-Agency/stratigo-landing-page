@@ -23,36 +23,41 @@ export interface SocialLink {
   url: string
 }
 
+export interface CTAButton {
+  label: string
+  link: string
+  isExternal?: boolean
+  variant?: 'primary' | 'secondary' | 'outline'
+}
+
 export interface Hero {
   _id: string
-  titlePart1: string
-  titlePart2: string
+  title: string
   subtitle?: string
-  description?: string
-  backgroundImage?: {
-    asset: {
-      _ref: string
-      _type: string
+  imageGallery: Array<{
+    image: {
+      asset: {
+        _ref: string
+        _type: string
+      }
+      alt?: string
+      hotspot?: {
+        x: number
+        y: number
+        height: number
+        width: number
+      }
+      crop?: {
+        top: number
+        bottom: number
+        left: number
+        right: number
+      }
     }
-    alt?: string
-  }
-  backgroundVideo?: {
-    asset?: {
-      _id?: string
-      url?: string
-      _type?: string
-    }
-  }
-  backgroundVideoUrl?: string
-  ctaButton?: {
-    label: string
-    link: string
-  }
-  alignment?: 'left' | 'center' | 'right'
+    orientation: 'portrait' | 'landscape'
+  }>
+  ctaButtons?: CTAButton[]
   isActive?: boolean
-  statistics?: Statistic[]
-  socialLinks?: SocialLink[]
-  availabilityStatus?: string
 }
 
 export interface CaseStudy {
@@ -169,37 +174,24 @@ export const POSTS_QUERY = defineQuery(/* groq */ `
 export const HERO_QUERY = `
   *[_type == "hero" && (!defined(isActive) || isActive == true)] | order(_createdAt desc) [0] {
     _id,
-    titlePart1,
-    titlePart2,
+    title,
     subtitle,
-    description,
-    backgroundImage {
-      asset,
-      alt
+    imageGallery[] {
+      image {
+        asset,
+        alt,
+        hotspot,
+        crop
+      },
+      orientation
     },
-    backgroundVideo {
-      asset-> {
-        _id,
-        url,
-        _type
-      }
-    },
-    backgroundVideoUrl,
-    ctaButton {
+    ctaButtons[] {
       label,
-      link
+      link,
+      isExternal,
+      variant
     },
-    alignment,
-    isActive,
-    statistics[] {
-      number,
-      label
-    },
-    socialLinks[] {
-      platform,
-      url
-    },
-    availabilityStatus
+    isActive
   }
 `
 
@@ -296,6 +288,73 @@ export const PRICING_PACKAGES_QUERY = `
       link
     },
     order,
+    isActive
+  }
+`
+
+export interface ContactCategory {
+  category: string
+  email?: string
+  phone?: string
+  address?: string[]
+}
+
+export interface SocialLink {
+  platform: string
+  url: string
+}
+
+export interface Contact {
+  _id: string
+  title: string
+  subtitle: string
+  whatsappLink?: string
+  contactCategories: ContactCategory[]
+  socialLinks?: SocialLink[]
+  image?: {
+    asset: {
+      _ref: string
+      _type: string
+    }
+    alt?: string
+    hotspot?: {
+      x: number
+      y: number
+      height: number
+      width: number
+    }
+    crop?: {
+      top: number
+      bottom: number
+      left: number
+      right: number
+    }
+  }
+  isActive?: boolean
+}
+
+export const CONTACT_QUERY = `
+  *[_type == "contact" && (!defined(isActive) || isActive == true)] | order(_createdAt desc) [0] {
+    _id,
+    title,
+    subtitle,
+    whatsappLink,
+    contactCategories[] {
+      category,
+      email,
+      phone,
+      address
+    },
+    socialLinks[] {
+      platform,
+      url
+    },
+    image {
+      asset,
+      alt,
+      hotspot,
+      crop
+    },
     isActive
   }
 `

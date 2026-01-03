@@ -1,27 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { client, urlFor } from '@/sanity/client'
+import { client } from '@/sanity/client'
 import { PRICING_PACKAGES_QUERY, type PricingPackage } from '@/sanity/queries'
 
 const pricingPackages = ref<PricingPackage[]>([])
 const loading = ref(true)
 const currentSlide = ref(0)
 const carouselRef = ref<HTMLElement | null>(null)
-
-const getImageUrl = (pkg: PricingPackage, width = 400, height = 300): string | undefined => {
-  if (pkg.image?.asset) {
-    return urlFor(pkg.image).width(width).height(height).quality(85).url()
-  }
-  return undefined
-}
-
-const getImageAlt = (pkg: PricingPackage): string => {
-  const alt = pkg.image?.alt
-  if (alt != null && alt !== '') {
-    return alt
-  }
-  return `${pkg.packageName} package image`
-}
 
 // Handle carousel scroll
 const handleScroll = () => {
@@ -67,15 +52,6 @@ onMounted(async () => {
           class="pricing-card group relative flex flex-col overflow-hidden rounded-lg transition-all duration-500 bg-white border-2"
           :class="pkg.isPopular ? 'border-black' : 'border-gray-200'"
         >
-          <!-- Image (optional) -->
-          <div v-if="getImageUrl(pkg)" class="relative w-full h-80 overflow-hidden bg-gray-100 rounded-t-lg flex items-center justify-center">
-            <img
-              :src="getImageUrl(pkg)"
-              :alt="getImageAlt(pkg)"
-              class="w-full h-full object-contain transition-transform duration-700"
-            />
-          </div>
-
           <!-- Content -->
           <div class="flex flex-col flex-grow p-6">
             <!-- Package Name with Popular Badge -->
@@ -141,15 +117,6 @@ onMounted(async () => {
             class="pricing-card-mobile flex-shrink-0 w-[85vw] max-w-[320px] snap-center flex flex-col overflow-hidden rounded-xl bg-white border-2"
             :class="pkg.isPopular ? 'border-black' : 'border-gray-200'"
           >
-            <!-- Image (optional) -->
-            <div v-if="getImageUrl(pkg)" class="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-t-xl flex items-center justify-center">
-              <img
-                :src="getImageUrl(pkg)"
-                :alt="getImageAlt(pkg)"
-                class="w-full h-full object-contain"
-              />
-            </div>
-
             <!-- Content -->
             <div class="flex flex-col flex-grow p-5">
               <!-- Package Name with Popular Badge -->
