@@ -70,7 +70,7 @@
                 href="tel:+6281234567890" 
                 class="text-white/70 hover:text-white transition-colors duration-200 no-underline"
               >
-                +62 812 3456 7890
+                087881332121
               </a>
             </li>
           </ul>
