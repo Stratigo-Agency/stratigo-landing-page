@@ -39,6 +39,13 @@
             >
               Contact
             </router-link>
+            <button
+              @click="scrollToPricing"
+              class="no-underline font-medium transition-colors duration-200 bg-transparent border-none cursor-pointer p-0"
+              :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+            >
+              Pricing
+            </button>
             <!-- Hidden for now
             <router-link 
               to="/portfolio" 
@@ -135,6 +142,13 @@
           >
             Contact
           </router-link>
+          <button
+            @click="scrollToPricing"
+            class="text-left font-medium transition-colors duration-200 py-2 bg-transparent border-none cursor-pointer p-0"
+            :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+          >
+            Pricing
+          </button>
           <!-- Hidden for now
           <router-link 
             to="/portfolio" 
@@ -179,7 +193,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import logoBlack from '@/assets/logos/stratigo-logo-black.webp'
 import logoWhite from '@/assets/logos/stratigo-logo-white.webp'
 
@@ -190,6 +204,7 @@ const lastScrollY = ref(0)
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024)
 
 const route = useRoute()
+const router = useRouter()
 
 const logoPath = computed(() => {
   if (isScrolledPastHero.value) {
@@ -197,6 +212,41 @@ const logoPath = computed(() => {
   }
   return logoWhite
 })
+
+const scrollToPricing = () => {
+  closeMenu()
+  if (route.path === '/') {
+    // Already on home page, scroll to pricing section
+    const pricingElement = document.getElementById('pricing')
+    if (pricingElement) {
+      const navHeight = 80 // Approximate navbar height
+      const elementPosition = pricingElement.getBoundingClientRect().top + window.pageYOffset
+      const offsetPosition = elementPosition - navHeight
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
+  } else {
+    // Navigate to home page first, then scroll after navigation
+    router.push('/').then(() => {
+      setTimeout(() => {
+        const pricingElement = document.getElementById('pricing')
+        if (pricingElement) {
+          const navHeight = 80
+          const elementPosition = pricingElement.getBoundingClientRect().top + window.pageYOffset
+          const offsetPosition = elementPosition - navHeight
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          })
+        }
+      }, 100)
+    })
+  }
+}
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value

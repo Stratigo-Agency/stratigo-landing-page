@@ -114,24 +114,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { client, urlFor } from '@/sanity/client'
+import { ref, onMounted } from 'vue'
+import { client } from '@/sanity/client'
 import { CONTACT_QUERY, type Contact } from '@/sanity/queries'
 
 const contact = ref<Contact | null>(null)
 const loading = ref(true)
-
-const imageUrl = computed(() => {
-  if (contact.value?.image?.asset) {
-    return urlFor(contact.value.image)
-      .width(1200)
-      .height(800)
-      .fit('crop')
-      .quality(85)
-      .url()
-  }
-  return null
-})
 
 const openCalendarModal = () => {
   // Open Google Calendar scheduling page in a new window

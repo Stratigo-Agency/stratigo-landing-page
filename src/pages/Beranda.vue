@@ -22,7 +22,6 @@ import { PAGE_SECTIONS_QUERY, type PageSections } from '@/sanity/queries'
 import Hero from '@/components/Hero.vue'
 import CaseStudiesCarousel from '@/components/CaseStudiesCarousel.vue'
 import VisualizeCenter from '@/components/VisualizeCenter.vue'
-import Deliverables from '@/components/Deliverables.vue'
 import CTA from '@/components/CTA.vue'
 import Pricing from '@/components/Pricing.vue'
 

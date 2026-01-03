@@ -7,20 +7,9 @@ export interface Post {
   slug: { current: string } | null
 }
 
-export interface CTAButton {
-  label: string
-  link: string
-  variant: 'primary' | 'secondary' | 'outline'
-}
-
 export interface Statistic {
   number: string
   label: string
-}
-
-export interface SocialLink {
-  platform: 'twitter' | 'instagram' | 'linkedin' | 'facebook'
-  url: string
 }
 
 export interface CTAButton {
@@ -300,7 +289,7 @@ export interface ContactCategory {
 }
 
 export interface SocialLink {
-  platform: string
+  platform: 'twitter' | 'instagram' | 'linkedin' | 'facebook' | string
   url: string
 }
 
