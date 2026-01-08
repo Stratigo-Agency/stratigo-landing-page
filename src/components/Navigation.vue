@@ -8,7 +8,7 @@
       isNavHidden && !isMenuOpen ? '-translate-y-full' : 'translate-y-0'
     ]"
   >
-    <div class="px-6 py-4">
+    <div class="px-12 py-4">
       <div class="flex justify-between items-center">
         <!-- Logo on left -->
         <router-link to="/" class="no-underline" @click="closeMenu">
@@ -30,6 +30,14 @@
               active-class="text-black"
             >
               Beranda
+            </router-link>
+            <router-link 
+              to="/blog" 
+              class="no-underline font-medium transition-colors duration-200"
+              :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+              active-class="text-black"
+            >
+              Blog
             </router-link>
             <router-link 
               to="/contact" 
@@ -132,6 +140,15 @@
             active-class="text-black"
           >
             Beranda
+          </router-link>
+          <router-link 
+            to="/blog" 
+            @click="closeMenu"
+            class="no-underline font-medium transition-colors duration-200 py-2"
+            :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+            active-class="text-black"
+          >
+            Blog
           </router-link>
           <router-link 
             to="/contact" 
@@ -297,7 +314,7 @@ const handleResize = () => {
 
 // Watch for route changes to update navbar immediately
 watch(() => route.path, (newPath) => {
-  if (newPath === '/contact' || newPath !== '/') {
+  if (newPath === '/contact' || newPath.startsWith('/blog') || newPath !== '/') {
     isScrolledPastHero.value = true
   } else {
     // Reset for home page

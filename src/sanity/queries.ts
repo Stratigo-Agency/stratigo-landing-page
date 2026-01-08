@@ -444,3 +444,108 @@ export const TEXT_SECTION_BY_SLUG_QUERY = `
   }
 `
 
+// Blog Post Types
+export interface BlogPost {
+  _id: string
+  title: string
+  slug: {
+    current: string
+  }
+  excerpt: string
+  featuredImage: {
+    asset: {
+      _ref: string
+      _type: string
+    }
+    alt?: string
+    hotspot?: {
+      x: number
+      y: number
+      height: number
+      width: number
+    }
+    crop?: {
+      top: number
+      bottom: number
+      left: number
+      right: number
+    }
+  }
+  author?: string
+  publishedAt: string
+  category?: string
+  tags?: string[]
+  content: any[] // Portable Text content
+  readTime?: number
+  isFeatured?: boolean
+  isActive?: boolean
+}
+
+// Blog Queries
+export const BLOG_POSTS_QUERY = `
+  *[_type == "blogPost" && (!defined(isActive) || isActive == true)] | order(publishedAt desc) {
+    _id,
+    title,
+    slug,
+    excerpt,
+    featuredImage {
+      asset,
+      alt,
+      hotspot,
+      crop
+    },
+    author,
+    publishedAt,
+    category,
+    tags,
+    readTime,
+    isFeatured,
+    isActive
+  }
+`
+
+export const BLOG_POST_BY_SLUG_QUERY = `
+  *[_type == "blogPost" && slug.current == $slug && (!defined(isActive) || isActive == true)] [0] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    featuredImage {
+      asset,
+      alt,
+      hotspot,
+      crop
+    },
+    author,
+    publishedAt,
+    category,
+    tags,
+    content,
+    readTime,
+    isFeatured,
+    isActive
+  }
+`
+
+export const FEATURED_BLOG_POSTS_QUERY = `
+  *[_type == "blogPost" && isFeatured == true && (!defined(isActive) || isActive == true)] | order(publishedAt desc) [0...3] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    featuredImage {
+      asset,
+      alt,
+      hotspot,
+      crop
+    },
+    author,
+    publishedAt,
+    category,
+    tags,
+    readTime,
+    isFeatured,
+    isActive
+  }
+`
+

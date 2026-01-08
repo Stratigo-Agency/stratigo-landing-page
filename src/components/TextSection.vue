@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
+import { RouterLink } from 'vue-router'
 import { client, urlFor } from '@/sanity/client'
 import { TEXT_SECTION_QUERY, type TextSection, type TextSectionCard } from '@/sanity/queries'
+
+// Check if URL is external (starts with http/https) or relative
+const isExternalUrl = (url: string): boolean => {
+  return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')
+}
 
 const textSections = ref<TextSection[] | null>(null)
 const loading = ref(true)
@@ -104,7 +110,7 @@ onMounted(async () => {
         <div class="mb-12">
           <!-- Section Title -->
           <h2 
-            class="text-4xl md:text-5xl lg:max-w-5xl font-medium mb-6 text-[var(--fg)] transition-all duration-1000"
+            class="text-4xl md:text-5xl lg:max-w-5xl font-medium mb-6 text-[var(--fg)] transition-all duration-500"
             :class="visibleSections.has(section._id) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
           >
             {{ section.sectionTitle }}
@@ -113,7 +119,7 @@ onMounted(async () => {
           <!-- Category Tags -->
           <div
             v-if="section.categoryTags && section.categoryTags.length > 0"
-            class="flex flex-wrap gap-2 mb-6 transition-all duration-1000 delay-150"
+            class="flex flex-wrap gap-2 mb-6 transition-all duration-500 delay-100"
             :class="visibleSections.has(section._id) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
           >
             <span
@@ -128,7 +134,7 @@ onMounted(async () => {
           <!-- Description -->
           <p
             v-if="section.description"
-            class="text-md md:text-lg lg:max-w-5xl leading-relaxed whitespace-pre-line transition-all duration-1000 delay-300"
+            class="text-md md:text-lg lg:max-w-5xl leading-relaxed whitespace-pre-line transition-all duration-500 delay-200"
             :class="visibleSections.has(section._id) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
           >
             {{ section.description }}
@@ -146,9 +152,9 @@ onMounted(async () => {
             <div
               v-for="(card, cardIndex) in section.cards"
               :key="`${section._id}-card-${cardIndex}`"
-              class="group cursor-pointer flex-shrink-0 w-[280px] snap-center transition-all duration-1000"
+              class="group cursor-pointer flex-shrink-0 w-[280px] snap-center transition-all duration-500"
               :class="visibleSections.has(section._id) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
-              :style="{ transitionDelay: `${450 + cardIndex * 100}ms` }"
+              :style="{ transitionDelay: `${300 + cardIndex * 75}ms` }"
             >
             <!-- Image -->
             <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
@@ -175,12 +181,12 @@ onMounted(async () => {
                 {{ card.subtitle }}
               </p>
               
-              <!-- CTA Link -->
+              <!-- CTA Link - External -->
               <a
-                v-if="card.ctaLink && card.ctaLink.label && card.ctaLink.url"
+                v-if="card.ctaLink && card.ctaLink.label && card.ctaLink.url && (card.ctaLink.isExternal || isExternalUrl(card.ctaLink.url))"
                 :href="card.ctaLink.url"
-                :target="card.ctaLink.isExternal ? '_blank' : '_self'"
-                :rel="card.ctaLink.isExternal ? 'noopener noreferrer' : ''"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="inline-flex items-center gap-2 text-sm font-medium text-black hover:text-black/70 transition-colors duration-200 group"
               >
                 {{ card.ctaLink.label }}
@@ -198,6 +204,28 @@ onMounted(async () => {
                   />
                 </svg>
               </a>
+              
+              <!-- CTA Link - Internal/Relative -->
+              <RouterLink
+                v-else-if="card.ctaLink && card.ctaLink.label && card.ctaLink.url"
+                :to="card.ctaLink.url"
+                class="inline-flex items-center gap-2 text-sm font-medium text-black hover:text-black/70 transition-colors duration-200 group"
+              >
+                {{ card.ctaLink.label }}
+                <svg 
+                  class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    stroke-width="2" 
+                    d="M13 7l5 5m0 0l-5 5m5-5H6" 
+                  />
+                </svg>
+              </RouterLink>
             </div>
           </div>
         </div>
@@ -224,9 +252,9 @@ onMounted(async () => {
         <div
           v-for="(card, cardIndex) in section.cards"
           :key="`${section._id}-card-desktop-${cardIndex}`"
-          class="group cursor-pointer transition-all duration-1000"
+          class="group cursor-pointer transition-all duration-500"
           :class="visibleSections.has(section._id) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
-          :style="{ transitionDelay: `${450 + cardIndex * 100}ms` }"
+          :style="{ transitionDelay: `${300 + cardIndex * 75}ms` }"
         >
           <!-- Image -->
           <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
@@ -253,12 +281,12 @@ onMounted(async () => {
               {{ card.subtitle }}
             </p>
             
-            <!-- CTA Link -->
+            <!-- CTA Link - External -->
             <a
-              v-if="card.ctaLink && card.ctaLink.label && card.ctaLink.url"
+              v-if="card.ctaLink && card.ctaLink.label && card.ctaLink.url && (card.ctaLink.isExternal || isExternalUrl(card.ctaLink.url))"
               :href="card.ctaLink.url"
-              :target="card.ctaLink.isExternal ? '_blank' : '_self'"
-              :rel="card.ctaLink.isExternal ? 'noopener noreferrer' : ''"
+              target="_blank"
+              rel="noopener noreferrer"
               class="inline-flex items-center gap-2 text-sm font-medium text-black hover:text-black/70 transition-colors duration-200 group"
             >
               {{ card.ctaLink.label }}
@@ -276,6 +304,28 @@ onMounted(async () => {
                 />
               </svg>
             </a>
+            
+            <!-- CTA Link - Internal/Relative -->
+            <RouterLink
+              v-else-if="card.ctaLink && card.ctaLink.label && card.ctaLink.url"
+              :to="card.ctaLink.url"
+              class="inline-flex items-center gap-2 text-sm font-medium text-black hover:text-black/70 transition-colors duration-200 group"
+            >
+              {{ card.ctaLink.label }}
+              <svg 
+                class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M13 7l5 5m0 0l-5 5m5-5H6" 
+                />
+              </svg>
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -299,12 +349,12 @@ onMounted(async () => {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.delay-150 {
-  transition-delay: 150ms;
+.delay-100 {
+  transition-delay: 100ms;
 }
 
-.delay-300 {
-  transition-delay: 300ms;
+.delay-200 {
+  transition-delay: 200ms;
 }
 </style>
 

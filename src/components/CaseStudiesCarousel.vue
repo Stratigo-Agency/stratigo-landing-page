@@ -5,6 +5,8 @@ import { CASE_STUDIES_QUERY, type CaseStudy } from '@/sanity/queries'
 
 const caseStudies = ref<CaseStudy[]>([])
 const loading = ref(true)
+const currentSlide = ref(0)
+const carouselRef = ref<HTMLElement | null>(null)
 
 // Get featured case study (first one marked as featured, or first one)
 const featuredStudy = computed(() => {
@@ -31,6 +33,26 @@ const getImageAlt = (caseStudy: CaseStudy): string => {
     return alt
   }
   return caseStudy.title || 'Case study image'
+}
+
+// Handle carousel scroll
+const handleScroll = () => {
+  const carousel = carouselRef.value
+  if (!carousel) return
+  const scrollLeft = carousel.scrollLeft
+  const cardWidth = 280 + 16 // card width + gap
+  currentSlide.value = Math.round(scrollLeft / cardWidth)
+}
+
+// Scroll to specific slide
+const scrollToSlide = (index: number) => {
+  const carousel = carouselRef.value
+  if (!carousel) return
+  const cardWidth = 280 + 16 // card width + gap
+  carousel.scrollTo({
+    left: index * cardWidth,
+    behavior: 'smooth'
+  })
 }
 
 onMounted(async () => {
@@ -90,15 +112,69 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- Smaller Case Studies - Horizontal scroll on mobile, grid on desktop -->
+        <!-- Smaller Case Studies - Mobile Carousel -->
+        <div v-if="remainingStudies.length > 0" class="md:hidden -mx-6">
+          <div 
+            ref="carouselRef"
+            class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-6 scrollbar-hide"
+            @scroll="handleScroll"
+          >
+            <div
+              v-for="caseStudy in remainingStudies"
+              :key="caseStudy._id"
+              class="group cursor-pointer flex-shrink-0 w-[280px] snap-center"
+            >
+              <!-- Image -->
+              <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
+                <img
+                  v-if="getImageUrl(caseStudy, 800, 450)"
+                  :src="getImageUrl(caseStudy, 800, 450)"
+                  :alt="getImageAlt(caseStudy)"
+                  class="w-full h-full object-cover transition-transform duration-300"
+                />
+                <div 
+                  v-else 
+                  class="w-full h-full flex items-center justify-center bg-gray-100 text-black/40"
+                >
+                  No image available
+                </div>
+              </div>
+              
+              <!-- Title and Client -->
+              <div v-if="caseStudy.title || caseStudy.client">
+                <h3 class="text-2xl font-light text-black mb-1">
+                  {{ caseStudy.title }}
+                </h3>
+                <p v-if="caseStudy.client" class="text-sm text-black/50">
+                  {{ caseStudy.client }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scroll Indicators (Mobile only) -->
+          <div v-if="remainingStudies.length > 1" class="flex justify-center gap-2 mt-4">
+            <button
+              v-for="(_, index) in remainingStudies"
+              :key="index"
+              :aria-label="`Go to case study ${index + 1} of ${remainingStudies.length}`"
+              :aria-current="currentSlide === index ? 'true' : 'false'"
+              class="w-2 h-2 rounded-full transition-all duration-300"
+              :class="currentSlide === index ? 'bg-black w-6' : 'bg-gray-400'"
+              @click="scrollToSlide(index)"
+            ></button>
+          </div>
+        </div>
+
+        <!-- Smaller Case Studies - Desktop Grid -->
         <div 
           v-if="remainingStudies.length > 0" 
-          class="ml-6 flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4 md:mx-0 md:px-6 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:pb-0 md:overflow-visible scrollbar-hide"
+          class="hidden md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 px-6"
         >
           <div
             v-for="caseStudy in remainingStudies"
             :key="caseStudy._id"
-            class="group cursor-pointer flex-shrink-0 w-[80vw] snap-start md:w-auto"
+            class="group cursor-pointer"
           >
             <!-- Image -->
             <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
@@ -126,8 +202,6 @@ onMounted(async () => {
               </p>
             </div>
           </div>
-          <!-- Spacer for right padding on mobile -->
-          <div class="flex-shrink-0 w-4 md:hidden" aria-hidden="true"></div>
         </div>
 
       </div>

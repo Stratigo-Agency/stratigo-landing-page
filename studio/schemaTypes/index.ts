@@ -8,5 +8,6 @@ import pageSections from './pageSections'
 import pricingPackage from './pricingPackage'
 import contact from './contact'
 import textSection from './textSection'
+import blogPost from './blogPost'
 
-export const schemaTypes = [hero, product, caseStudy, deliverable, createWithUs, cta, pageSections, pricingPackage, contact, textSection]
+export const schemaTypes = [hero, product, caseStudy, deliverable, createWithUs, cta, pageSections, pricingPackage, contact, textSection, blogPost]

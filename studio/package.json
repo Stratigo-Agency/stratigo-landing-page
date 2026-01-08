@@ -15,6 +15,7 @@
     "sanity"
   ],
   "dependencies": {
+    "@portabletext/vue": "^1.0.14",
     "@sanity/vision": "^5.2.0",
     "react": "^19.1",
     "react-dom": "^19.1",

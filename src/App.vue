@@ -4,12 +4,12 @@ import Footer from '@/components/Footer.vue'
 </script>
 
 <template>
-  <div id="app" class="min-h-screen bg-white flex flex-col">
+  <div id="app" class="min-h-screen bg-white flex flex-col overflow-x-hidden">
     <Navigation />
-    <main class="flex-grow">
+    <main class="flex-grow overflow-hidden">
       <router-view />
     </main>
     <Footer />
-    </div>
+  </div>
 </template>
 

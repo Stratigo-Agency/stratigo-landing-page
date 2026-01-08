@@ -80,11 +80,8 @@ export default defineType({
                 {
                   name: 'url',
                   title: 'URL',
-                  type: 'url',
-                  description: 'Link destination (e.g., https://example.com)',
-                  validation: (Rule) => Rule.uri({
-                    scheme: ['http', 'https', 'mailto', 'tel'],
-                  }),
+                  type: 'string',
+                  description: 'Link destination - can be relative (e.g., /blog/my-post) or absolute (e.g., https://example.com)',
                 },
                 {
                   name: 'isExternal',

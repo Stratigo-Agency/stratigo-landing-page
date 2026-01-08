@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white min-h-screen">
+  <div class="bg-white min-h-screen overflow-hidden">
     <!-- Loading state -->
     <div v-if="loading" class="min-h-screen flex items-center justify-center">
       <p class="text-xl text-black/60">Loading contact information...</p>

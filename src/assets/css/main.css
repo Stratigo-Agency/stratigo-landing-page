@@ -3,7 +3,24 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  html, body {
     @apply font-sans;
+    overflow-x: hidden;
+  }
+  
+  /* Prevent elements with translate animations from creating extra scroll space */
+  html {
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  #app {
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 }

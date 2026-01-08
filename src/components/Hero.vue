@@ -134,7 +134,7 @@ onMounted(async () => {
       <div class="text-left">
         <!-- Title -->
         <h1 
-          class="text-4xl md:text-6xl lg:text-6xl font-light text-white mb-6 lg:max-w-5xl leading-tight transition-all duration-1000"
+          class="text-4xl md:text-6xl lg:text-6xl font-light text-white mb-6 lg:max-w-5xl leading-tight transition-all duration-500"
           :class="showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
         >
           {{ hero.title }}
@@ -143,7 +143,7 @@ onMounted(async () => {
         <!-- Subtitle -->
         <p 
           v-if="hero.subtitle" 
-          class="text-lg md:text-xl text-white/70 lg:max-w-2xl mb-12 transition-all duration-1000 delay-200"
+          class="text-lg md:text-xl text-white/70 lg:max-w-2xl mb-12 transition-all duration-500 delay-100"
           :class="showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
         >
           {{ hero.subtitle }}
@@ -152,7 +152,7 @@ onMounted(async () => {
         <!-- CTA Buttons -->
         <div 
           v-if="hero.ctaButtons && hero.ctaButtons.length > 0" 
-          class="flex flex-row gap-4 justify-left items-center flex-wrap transition-all duration-1000 delay-400"
+          class="flex flex-row gap-4 justify-left items-center flex-wrap transition-all duration-500 delay-200"
           :class="showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
         >
           <template v-for="(button, index) in hero.ctaButtons" :key="index">
@@ -235,12 +235,12 @@ onMounted(async () => {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.delay-200 {
-  transition-delay: 200ms;
+.delay-100 {
+  transition-delay: 100ms;
 }
 
-.delay-400 {
-  transition-delay: 400ms;
+.delay-200 {
+  transition-delay: 200ms;
 }
 </style>
 
