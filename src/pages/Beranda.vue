@@ -22,7 +22,7 @@
       class="transition-all duration-500 ease-out"
       :class="visibleSections.has('pricing') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'"
     >
-      <h1 class="text-4xl md:text-5xl text-black font-medium text-center px-6 md:px-12 lg:px-16">
+      <h1 class="text-3xl md:text-5xl text-black font-medium md:text-center px-6 md:px-12 lg:px-16">
         Paket Terbaik untukmu
       </h1>
       <Pricing />
