@@ -6,6 +6,7 @@ import Kontak from '@/pages/Kontak.vue'
 import Contact from '@/pages/Contact.vue'
 import Blog from '@/pages/Blog.vue'
 import BlogPost from '@/pages/BlogPost.vue'
+import Privacy from '@/pages/Privacy.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/blog/:slug',
       name: 'BlogPost',
       component: BlogPost
+    },
+    {
+      path: '/privacy',
+      name: 'Privacy',
+      component: Privacy
     }
   ],
   scrollBehavior(_to, _from, savedPosition) {

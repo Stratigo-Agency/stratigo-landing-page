@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Navigation from '@/components/Navigation.vue'
 import Footer from '@/components/Footer.vue'
+import CookieConsent from '@/components/CookieConsent.vue'
 </script>
 
 <template>
@@ -10,6 +11,7 @@ import Footer from '@/components/Footer.vue'
       <router-view />
     </main>
     <Footer />
+    <CookieConsent />
   </div>
 </template>
 
