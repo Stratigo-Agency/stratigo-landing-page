@@ -1,14 +1,14 @@
 <template>
   <div class="bg-white flex flex-col">
     <Hero />
+    <TextSection />
     <div>
-        <h1 class="text-4xl md:text-6xl text-black font-light text-center pt-16">{{ pageSections?.caseStudiesTitle || 'Website yang Bekerja untuk-Mu' }}</h1>
+        <h1 class="text-4xl md:text-5xl text-black font-medium text-left px-6 md:px-12 lg:px-16 pt-16">{{ pageSections?.caseStudiesTitle || 'Website yang Bekerja untuk-Mu' }}</h1>
         <CaseStudiesCarousel />
     </div>
    
-    <VisualizeCenter />
     <div id="pricing">
-        <h1 class="text-4xl md:text-6xl text-black font-light text-center text-black pt-16">Paket Terbaik untukmu</h1>
+        <h1 class="text-4xl md:text-5xl text-black font-medium text-center text-black px-6 md:px-12 lg:px-16">Paket Terbaik untukmu</h1>
         <Pricing />
     </div>
     <CTA />
@@ -21,9 +21,9 @@ import { client } from '@/sanity/client'
 import { PAGE_SECTIONS_QUERY, type PageSections } from '@/sanity/queries'
 import Hero from '@/components/Hero.vue'
 import CaseStudiesCarousel from '@/components/CaseStudiesCarousel.vue'
-import VisualizeCenter from '@/components/VisualizeCenter.vue'
 import CTA from '@/components/CTA.vue'
 import Pricing from '@/components/Pricing.vue'
+import TextSection from '@/components/TextSection.vue'
 
 const pageSections = ref<PageSections | null>(null)
 

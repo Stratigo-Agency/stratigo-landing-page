@@ -7,5 +7,6 @@ import cta from './cta'
 import pageSections from './pageSections'
 import pricingPackage from './pricingPackage'
 import contact from './contact'
+import textSection from './textSection'
 
-export const schemaTypes = [hero, product, caseStudy, deliverable, createWithUs, cta, pageSections, pricingPackage, contact]
+export const schemaTypes = [hero, product, caseStudy, deliverable, createWithUs, cta, pageSections, pricingPackage, contact, textSection]

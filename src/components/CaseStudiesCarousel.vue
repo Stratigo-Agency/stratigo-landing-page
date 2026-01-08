@@ -58,10 +58,10 @@ onMounted(async () => {
         >
           <!-- Left: Text Content with dark background -->
           <div class="bg-gray-100 p-8 lg:p-12 flex flex-col justify-center order-2 lg:order-1">
-            <h2 class="text-2xl md:text-4xl lg:text-6xl font-light text-black mb-6 tracking-tight leading-tight">
+            <h2 class="text-2xl md:text-4xl lg:text-4xl font-normal text-black mb-6 tracking-tight leading-tight">
               {{ featuredStudy.title }}
             </h2>
-            <p class="text-md md:text-2xl text-black/70 leading-relaxed">
+            <p class="text-md md:text-xl text-black/70 leading-relaxed">
               <span v-if="featuredStudy.highlight" class="font-light text-black">{{ featuredStudy.highlight }}</span>
               <span v-if="featuredStudy.highlight && featuredStudy.description"> </span>
               <span v-if="featuredStudy.description">{{ featuredStudy.description }}</span>

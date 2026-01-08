@@ -7,6 +7,7 @@ import { HERO_QUERY, type Hero } from '@/sanity/queries'
 const hero = ref<Hero | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+const showContent = ref(false)
 
 const getImageUrl = (galleryItem: Hero['imageGallery'][0], width = 800, height = 600): string | undefined => {
   if (galleryItem?.image?.asset) {
@@ -36,6 +37,10 @@ onMounted(async () => {
       error.value = 'No hero content found. Please create a hero document in Sanity Studio with isActive set to true.'
     } else {
       console.log('Hero data loaded:', hero.value)
+      // Trigger fade-in animation after content loads
+      setTimeout(() => {
+        showContent.value = true
+      }, 100)
     }
   } catch (e) {
     console.error('Failed to fetch hero content:', e)
@@ -83,9 +88,9 @@ onMounted(async () => {
             <div
               class="flex-shrink-0 relative"
               :class="{
-                'h-[150px] md:h-[240px] lg:h-[280px]': true,
-                'w-[84px] md:w-[140px] lg:w-[160px]': galleryItem.orientation === 'portrait',
-                'w-[267px] md:w-[427px] lg:w-[498px]': galleryItem.orientation === 'landscape',
+                'h-[150px] md:h-[240px] lg:h-[180px]': true,
+                'w-[84px] md:w-[140px] lg:w-[100px]': galleryItem.orientation === 'portrait',
+                'w-[267px] md:w-[427px] lg:w-[320px]': galleryItem.orientation === 'landscape',
               }"
             >
               <div class="relative overflow-hidden rounded-lg shadow-lg h-full">
@@ -128,17 +133,28 @@ onMounted(async () => {
     <div class="px-6 md:px-12 lg:px-16 pb-16 md:pb-24">
       <div class="text-left">
         <!-- Title -->
-        <h1 class="text-4xl md:text-6xl lg:text-6xl font-light text-white mb-6 leading-tight">
+        <h1 
+          class="text-4xl md:text-6xl lg:text-6xl font-light text-white mb-6 lg:max-w-5xl leading-tight transition-all duration-1000"
+          :class="showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+        >
           {{ hero.title }}
         </h1>
         
         <!-- Subtitle -->
-        <p v-if="hero.subtitle" class="text-lg md:text-xl text-white/70 mb-12">
+        <p 
+          v-if="hero.subtitle" 
+          class="text-lg md:text-xl text-white/70 lg:max-w-2xl mb-12 transition-all duration-1000 delay-200"
+          :class="showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+        >
           {{ hero.subtitle }}
         </p>
 
         <!-- CTA Buttons -->
-        <div v-if="hero.ctaButtons && hero.ctaButtons.length > 0" class="flex flex-row gap-4 justify-left items-center flex-wrap">
+        <div 
+          v-if="hero.ctaButtons && hero.ctaButtons.length > 0" 
+          class="flex flex-row gap-4 justify-left items-center flex-wrap transition-all duration-1000 delay-400"
+          :class="showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+        >
           <template v-for="(button, index) in hero.ctaButtons" :key="index">
             <RouterLink
               v-if="!button.isExternal"
@@ -214,6 +230,17 @@ onMounted(async () => {
   animation: scroll-left 30s linear infinite;
 }
 
+/* Smooth fade-in with ease-out for natural feel */
+.transition-all {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+.delay-200 {
+  transition-delay: 200ms;
+}
+
+.delay-400 {
+  transition-delay: 400ms;
+}
 </style>
 

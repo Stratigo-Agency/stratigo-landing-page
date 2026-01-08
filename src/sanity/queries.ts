@@ -322,6 +322,48 @@ export interface Contact {
   isActive?: boolean
 }
 
+export interface TextSectionCard {
+  title: string
+  subtitle?: string
+  image: {
+    asset: {
+      _ref: string
+      _type: string
+    }
+    alt?: string | null
+    hotspot?: {
+      x: number
+      y: number
+      height: number
+      width: number
+    }
+    crop?: {
+      top: number
+      bottom: number
+      left: number
+      right: number
+    }
+  }
+  ctaLink?: {
+    label: string
+    url: string
+    isExternal?: boolean
+  }
+  order?: number
+}
+
+export interface TextSection {
+  _id: string
+  sectionTitle: string
+  categoryTags?: string[]
+  description: string
+  cards?: TextSectionCard[]
+  slug: {
+    current: string
+  }
+  isActive?: boolean
+}
+
 export const CONTACT_QUERY = `
   *[_type == "contact" && (!defined(isActive) || isActive == true)] | order(_createdAt desc) [0] {
     _id,
@@ -344,6 +386,60 @@ export const CONTACT_QUERY = `
       hotspot,
       crop
     },
+    isActive
+  }
+`
+
+export const TEXT_SECTION_QUERY = `
+  *[_type == "textSection" && (!defined(isActive) || isActive == true)] | order(_createdAt desc) {
+    _id,
+    sectionTitle,
+    categoryTags,
+    description,
+    cards[] {
+      title,
+      subtitle,
+      image {
+        asset,
+        alt,
+        hotspot,
+        crop
+      },
+      ctaLink {
+        label,
+        url,
+        isExternal
+      },
+      order
+    } | order(order asc),
+    slug,
+    isActive
+  }
+`
+
+export const TEXT_SECTION_BY_SLUG_QUERY = `
+  *[_type == "textSection" && slug.current == $slug && (!defined(isActive) || isActive == true)] [0] {
+    _id,
+    sectionTitle,
+    categoryTags,
+    description,
+    cards[] {
+      title,
+      subtitle,
+      image {
+        asset,
+        alt,
+        hotspot,
+        crop
+      },
+      ctaLink {
+        label,
+        url,
+        isExternal
+      },
+      order
+    } | order(order asc),
+    slug,
     isActive
   }
 `
