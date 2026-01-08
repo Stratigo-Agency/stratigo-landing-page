@@ -4,7 +4,7 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         <!-- Logo and Description -->
         <div class="col-span-1 md:col-span-2">
-          <router-link to="/" class="inline-block mb-4">
+          <router-link to="/" @click="scrollToTop" class="inline-block mb-4">
             <img src="@/assets/logos/stratigo-logo-white.webp" alt="Stratigo" class="h-6" />
           </router-link>
           <p class="text-white/70 text-md leading-relaxed max-w-md">
@@ -19,6 +19,7 @@
             <li>
               <router-link 
                 to="/" 
+                @click="scrollToTop"
                 class="text-white/70 text-md no-underline hover:text-white transition-colors duration-200"
               >
                 Beranda
@@ -27,6 +28,7 @@
             <li>
               <router-link 
                 to="/blog" 
+                @click="scrollToTop"
                 class="text-white/70 text-md no-underline hover:text-white transition-colors duration-200"
               >
                 Blog
@@ -35,6 +37,7 @@
             <li>
               <router-link 
                 to="/contact" 
+                @click="scrollToTop"
                 class="text-white/70 text-md no-underline hover:text-white transition-colors duration-200"
               >
                 Kontak
@@ -161,6 +164,11 @@ import { CONTACT_QUERY, type Contact } from '@/sanity/queries'
 
 const contact = ref<Contact | null>(null)
 const currentYear = computed(() => new Date().getFullYear())
+
+// Scroll to top immediately (no animation)
+const scrollToTop = () => {
+  window.scrollTo(0, 0)
+}
 
 onMounted(async () => {
   try {

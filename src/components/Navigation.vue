@@ -2,16 +2,16 @@
   <nav 
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
     :class="[
-      isScrolledPastHero 
+      (isScrolledPastHero || isMenuOpen)
         ? 'bg-white border-b border-black/10' 
         : 'bg-transparent border-b border-transparent',
       isNavHidden && !isMenuOpen ? '-translate-y-full' : 'translate-y-0'
     ]"
   >
-    <div class="px-12 py-4">
+    <div class="px-6 lg:px-12 py-4">
       <div class="flex justify-between items-center">
         <!-- Logo on left -->
-        <router-link to="/" class="no-underline" @click="closeMenu">
+        <router-link to="/" class="no-underline" @click="scrollToTop">
           <img 
             :src="logoPath" 
             alt="Stratigo" 
@@ -25,6 +25,7 @@
           <div class="flex gap-8">
             <router-link 
               to="/" 
+              @click="scrollToTop"
               class="no-underline font-medium transition-colors duration-200"
               :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
               active-class="text-black"
@@ -33,6 +34,7 @@
             </router-link>
             <router-link 
               to="/blog" 
+              @click="scrollToTop"
               class="no-underline font-medium transition-colors duration-200"
               :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
               active-class="text-black"
@@ -41,6 +43,7 @@
             </router-link>
             <router-link 
               to="/contact" 
+              @click="scrollToTop"
               class="no-underline font-medium transition-colors duration-200"
               :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
               active-class="text-black"
@@ -85,6 +88,7 @@
           <!-- CTA Button on right -->
           <router-link 
             to="/contact"
+            @click="scrollToTop"
             class="px-6 py-3 rounded-lg border-2 no-underline font-medium transition-all duration-200 flex items-center gap-2"
             :class="isScrolledPastHero 
               ? 'bg-black text-white border-black hover:bg-white hover:text-black' 
@@ -101,7 +105,7 @@
         <button
           @click="toggleMenu"
           class="lg:hidden p-2 focus:outline-none transition-colors duration-200"
-          :class="isScrolledPastHero ? 'text-black' : 'text-white'"
+          :class="(isScrolledPastHero || isMenuOpen) ? 'text-black' : 'text-white'"
           aria-label="Toggle menu"
         >
           <svg 
@@ -128,41 +132,36 @@
       <!-- Mobile Menu -->
       <div
         v-if="isMenuOpen"
-        class="lg:hidden mt-4 pb-4 border-t transition-colors duration-200"
-        :class="isScrolledPastHero ? 'border-black/10' : 'border-white/20'"
+        class="lg:hidden mt-4 pb-4 border-t border-black/10"
       >
         <div class="flex flex-col gap-4 pt-4">
           <router-link 
             to="/" 
-            @click="closeMenu"
-            class="no-underline font-medium transition-colors duration-200 py-2"
-            :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+            @click="closeMenu(); scrollToTop()"
+            class="no-underline font-medium transition-colors duration-200 py-2 text-black hover:text-black/70"
             active-class="text-black"
           >
             Beranda
           </router-link>
           <router-link 
             to="/blog" 
-            @click="closeMenu"
-            class="no-underline font-medium transition-colors duration-200 py-2"
-            :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+            @click="closeMenu(); scrollToTop()"
+            class="no-underline font-medium transition-colors duration-200 py-2 text-black hover:text-black/70"
             active-class="text-black"
           >
             Blog
           </router-link>
           <router-link 
             to="/contact" 
-            @click="closeMenu"
-            class="no-underline font-medium transition-colors duration-200 py-2"
-            :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+            @click="closeMenu(); scrollToTop()"
+            class="no-underline font-medium transition-colors duration-200 py-2 text-black hover:text-black/70"
             active-class="text-black"
           >
             Contact
           </router-link>
           <button
             @click="scrollToPricing"
-            class="text-left font-medium transition-colors duration-200 py-2 bg-transparent border-none cursor-pointer p-0"
-            :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+            class="text-left font-medium transition-colors duration-200 py-2 bg-transparent border-none cursor-pointer p-0 text-black hover:text-black/70"
           >
             Pricing
           </button>
@@ -194,7 +193,7 @@
           -->
           <router-link 
             to="/contact"
-            @click="closeMenu"
+            @click="closeMenu(); scrollToTop()"
             class="bg-black text-white px-6 py-3 rounded-lg border-2 border-black no-underline font-medium transition-all duration-200 hover:bg-white hover:text-black flex items-center justify-center gap-2 mt-2"
           >
             Hubungi Kami
@@ -224,7 +223,7 @@ const route = useRoute()
 const router = useRouter()
 
 const logoPath = computed(() => {
-  if (isScrolledPastHero.value) {
+  if (isScrolledPastHero.value || isMenuOpen.value) {
     return logoBlack
   }
   return logoWhite
@@ -271,6 +270,11 @@ const toggleMenu = () => {
 
 const closeMenu = () => {
   isMenuOpen.value = false
+}
+
+// Scroll to top immediately (no animation)
+const scrollToTop = () => {
+  window.scrollTo(0, 0)
 }
 
 const handleScroll = () => {
