@@ -38,7 +38,7 @@ export const useSEO = (seoData?: SEOData) => {
   }
   
   const updateSEO = (data: SEOData) => {
-    const baseUrl = 'https://your-domain.com' // Update with your actual domain
+    const baseUrl = 'https://stratigo.co.id'
     const currentUrl = baseUrl + route.fullPath
     
     // Update title
