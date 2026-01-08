@@ -113,16 +113,16 @@ onMounted(async () => {
         </div>
 
         <!-- Smaller Case Studies - Mobile Carousel -->
-        <div v-if="remainingStudies.length > 0" class="md:hidden -mx-6">
+        <div v-if="remainingStudies.length > 0" class="md:hidden">
           <div 
             ref="carouselRef"
-            class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-6 scrollbar-hide"
+            class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 pl-6 scrollbar-hide"
             @scroll="handleScroll"
           >
             <div
               v-for="caseStudy in remainingStudies"
               :key="caseStudy._id"
-              class="group cursor-pointer flex-shrink-0 w-[280px] snap-center"
+              class="group cursor-pointer flex-shrink-0 w-[280px] snap-start"
             >
               <!-- Image -->
               <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
@@ -150,6 +150,8 @@ onMounted(async () => {
                 </p>
               </div>
             </div>
+            <!-- Spacer for right padding on mobile -->
+            <div class="flex-shrink-0 w-2" aria-hidden="true"></div>
           </div>
 
           <!-- Scroll Indicators (Mobile only) -->

@@ -11,7 +11,15 @@ export const client = createClient({
 
 const builder = imageUrlBuilder(client)
 
+/**
+ * Generate optimized image URL from Sanity
+ * Automatically converts to WebP for browsers that support it
+ * Falls back to original format for older browsers
+ */
 export function urlFor(source: SanityImageSource) {
-  return builder.image(source)
+  return builder
+    .image(source)
+    .auto('format') // Automatically serve WebP when browser supports it
+    .quality(80)    // Good balance between quality and file size
 }
 

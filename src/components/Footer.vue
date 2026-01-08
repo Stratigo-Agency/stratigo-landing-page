@@ -26,6 +26,14 @@
             </li>
             <li>
               <router-link 
+                to="/blog" 
+                class="text-white/70 text-md no-underline hover:text-white transition-colors duration-200"
+              >
+                Blog
+              </router-link>
+            </li>
+            <li>
+              <router-link 
                 to="/contact" 
                 class="text-white/70 text-md no-underline hover:text-white transition-colors duration-200"
               >
