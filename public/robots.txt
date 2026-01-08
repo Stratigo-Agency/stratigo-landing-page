@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap location (update with your actual domain)
+Sitemap: https://stratigo.co.id/sitemap.xml
+
+# Disallow admin/studio areas if needed
+Disallow: /studio/
+Disallow: /admin/
+
