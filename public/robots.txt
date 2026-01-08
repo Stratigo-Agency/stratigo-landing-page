@@ -8,3 +8,4 @@ Sitemap: https://stratigo.co.id/sitemap.xml
 Disallow: /studio/
 Disallow: /admin/
 
+
