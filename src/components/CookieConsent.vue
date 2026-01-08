@@ -16,46 +16,32 @@ const saveConsent = (accepted: boolean) => {
   showBanner.value = false
   
   if (accepted) {
-    loadGoogleAds()
+    grantConsent()
   } else {
-    removeGoogleAds()
+    denyConsent()
   }
 }
 
-// Load Google Ads scripts
-const loadGoogleAds = () => {
-  // Check if already loaded
-  if (document.getElementById('google-ads-script')) return
-  
-  // Google Ads / Google Tag Manager script
-  const gtagScript = document.createElement('script')
-  gtagScript.id = 'google-ads-script'
-  gtagScript.async = true
-  gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_GOOGLE_ADS_ID || 'AW-XXXXXXXXX'}`
-  document.head.appendChild(gtagScript)
-  
-  // Initialize gtag
-  gtagScript.onload = () => {
-    window.dataLayer = window.dataLayer || []
-    function gtag(...args: any[]) {
-      window.dataLayer.push(args)
-    }
-    gtag('js', new Date())
-    gtag('config', import.meta.env.VITE_GOOGLE_ADS_ID || 'AW-XXXXXXXXX')
-    
-    // Make gtag available globally
-    ;(window as any).gtag = gtag
+// Grant consent for Google Analytics (script already loaded from index.html)
+const grantConsent = () => {
+  if (typeof window.gtag === 'function') {
+    window.gtag('consent', 'update', {
+      'analytics_storage': 'granted',
+      'ad_storage': 'granted'
+    })
   }
 }
 
-// Remove Google Ads scripts and cookies
-const removeGoogleAds = () => {
-  const script = document.getElementById('google-ads-script')
-  if (script) {
-    script.remove()
+// Deny consent for Google Analytics
+const denyConsent = () => {
+  if (typeof window.gtag === 'function') {
+    window.gtag('consent', 'update', {
+      'analytics_storage': 'denied',
+      'ad_storage': 'denied'
+    })
   }
   
-  // Clear Google Ads cookies
+  // Clear Google Analytics cookies
   const cookies = document.cookie.split(';')
   cookies.forEach(cookie => {
     const cookieName = cookie.split('=')[0].trim()
@@ -76,16 +62,20 @@ const declineCookies = () => {
 }
 
 onMounted(() => {
+  // Consent mode is already initialized in index.html with 'denied' by default
   const consent = checkConsent()
   
   if (consent === null) {
     // No choice made yet, show banner
+    // Consent remains 'denied' (set in index.html) until user accepts
     showBanner.value = true
   } else if (consent === 'accepted') {
-    // User previously accepted, load Google Ads
-    loadGoogleAds()
+    // User previously accepted, grant consent
+    grantConsent()
+  } else {
+    // User previously declined, ensure consent is denied
+    denyConsent()
   }
-  // If declined, do nothing (no ads loaded)
 })
 
 // Declare window types

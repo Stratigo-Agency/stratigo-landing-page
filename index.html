@@ -4,7 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/src/assets/icon/icon-black.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Stratigo Agency - Membantu bisnis Anda membangun kehadiran digital yang kuat melalui website profesional dan strategi pemasaran online yang efektif" />
+    <meta name="keywords" content="web design, web development, digital marketing, website profesional, custom website" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Stratigo Agency" />
     <title>Stratigo Agency</title>
+    
+    <!-- Preconnect to required origins for faster connection -->
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      // Initialize Consent Mode v2 - deny analytics by default until consent is given
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'wait_for_update': 500
+      });
+      
+      // Replace G-XXXXXXXXXX with your actual Google Analytics ID
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
   </head>
   <body>
     <div id="app"></div>
