@@ -71,84 +71,83 @@ onMounted(async () => {
       </div>
     </section>
 
-    <!-- Empty State -->
-    <section v-else-if="!loading && caseStudies.length === 0" class="py-20 px-6 md:px-12">
-      <div class="max-w-7xl mx-auto text-center">
-        <p class="text-xl text-black/60">No case studies available yet.</p>
-      </div>
-    </section>
-
-    <!-- Content -->
-    <section v-else class="py-12 px-6 md:px-12">
+    <!-- Case Studies Content -->
+    <section v-else-if="caseStudies.length > 0" class="py-20 px-6 md:px-12">
       <div>
-        <!-- Category Filters -->
-        <div v-if="categories.length > 0" class="mb-12 flex flex-wrap gap-3">
+        <!-- Category Filter -->
+        <div v-if="categories.length > 0" class="mb-8 flex flex-wrap gap-3">
           <button
             @click="selectedCategory = null"
-            :class="[
-              'px-4 py-2 rounded-lg border-2 transition-colors duration-200',
-              selectedCategory === null
-                ? 'bg-black text-white border-black'
-                : 'bg-white text-black border-black/20 hover:border-black/40'
-            ]"
+            class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
+            :class="selectedCategory === null 
+              ? 'bg-black text-white' 
+              : 'bg-gray-100 text-black hover:bg-gray-200'"
           >
-            Semua
+            All
           </button>
           <button
             v-for="category in categories"
             :key="category"
             @click="selectedCategory = category"
-            :class="[
-              'px-4 py-2 rounded-lg border-2 transition-colors duration-200 capitalize',
-              selectedCategory === category
-                ? 'bg-black text-white border-black'
-                : 'bg-white text-black border-black/20 hover:border-black/40'
-            ]"
+            class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 capitalize"
+            :class="selectedCategory === category 
+              ? 'bg-black text-white' 
+              : 'bg-gray-100 text-black hover:bg-gray-200'"
           >
             {{ category.replace('-', ' ') }}
           </button>
         </div>
 
         <!-- Case Studies Grid -->
-        <div v-if="filteredStudies.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div v-if="filteredStudies.length > 0" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <RouterLink
             v-for="study in filteredStudies"
             :key="study._id"
             :to="`/case-studies/${study.slug.current}`"
-            class="group block"
+            class="group no-underline"
           >
-            <div class="bg-white border border-black/10 rounded-xl overflow-hidden h-full flex flex-col">
-              <div class="relative aspect-video overflow-hidden bg-black">
-                <img
-                  v-if="getImageUrl(study)"
-                  :src="getImageUrl(study)"
-                  :alt="study.featuredImage?.alt || study.title"
-                  class="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
-                />
-              </div>
-              <div class="p-6 flex-1 flex flex-col">
-                <div v-if="study.category" class="mb-3">
-                  <span class="px-2 py-1 bg-black/5 rounded text-xs font-medium capitalize">
-                    {{ study.category.replace('-', ' ') }}
-                  </span>
-                </div>
-                <h3 class="text-xl font-medium mb-2 group-hover:underline line-clamp-2">
-                  {{ study.title }}
-                </h3>
-                <p v-if="study.client" class="text-sm text-black/60 mb-3">
+            <!-- Image -->
+            <div class="aspect-[16/9] overflow-hidden rounded-xl mb-4">
+              <img
+                v-if="getImageUrl(study, 800, 450)"
+                :src="getImageUrl(study, 800, 450)"
+                :alt="study.featuredImage?.alt || study.title"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+
+            <!-- Content -->
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <span v-if="study.category" class="px-3 py-1 bg-gray-100 text-black text-xs font-medium rounded-full capitalize">
+                  {{ study.category.replace('-', ' ') }}
+                </span>
+                <span v-if="study.client" class="text-sm text-black/60">
                   {{ study.client }}
-                </p>
-                <p class="text-sm text-black/70 line-clamp-3 mb-4 flex-1">
-                  {{ study.excerpt }}
-                </p>
-                <div class="flex items-center gap-2 text-black/60 text-sm pt-2 border-t border-black/5">
-                  <span>{{ formatDate(study.publishedAt) }}</span>
-                  <span class="group-hover:text-black transition-colors font-medium">Read More →</span>
-                </div>
+                </span>
+              </div>
+
+              <h3 class="text-2xl font-medium mb-2 text-black group-hover:text-black/70 transition-colors">
+                {{ study.title }}
+              </h3>
+
+              <p class="text-black/70 mb-4 leading-relaxed text-sm">
+                {{ study.excerpt }}
+              </p>
+
+              <div class="flex items-center gap-3 text-sm text-black/60">
+                <span>{{ formatDate(study.publishedAt) }}</span>
               </div>
             </div>
           </RouterLink>
         </div>
+      </div>
+    </section>
+
+    <!-- Empty State -->
+    <section v-else class="py-20 px-6 md:px-12">
+      <div class="max-w-7xl mx-auto text-center">
+        <p class="text-xl text-black/60">No case studies found.</p>
       </div>
     </section>
   </div>
