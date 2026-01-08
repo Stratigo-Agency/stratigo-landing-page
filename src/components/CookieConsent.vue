@@ -25,10 +25,39 @@ const saveConsent = (accepted: boolean) => {
 // Grant consent for Google Analytics (script already loaded from index.html)
 const grantConsent = () => {
   if (typeof window.gtag === 'function') {
+    // Update consent to granted
     window.gtag('consent', 'update', {
       'analytics_storage': 'granted',
       'ad_storage': 'granted'
     })
+    
+    // Send a page view event after granting consent
+    // This ensures the current page is tracked since initial load was with consent denied
+    setTimeout(() => {
+      const pagePath = window.location.pathname + window.location.search
+      const pageTitle = document.title
+      
+      // Find the GA script tag to get the ID
+      const gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]') as HTMLScriptElement
+      if (gaScript) {
+        const match = gaScript.src.match(/id=([^&]+)/)
+        const gaId = match ? match[1] : null
+        
+        if (gaId && gaId !== 'G-XXXXXXXXXX') {
+          // Update config with page info to trigger a page view
+          window.gtag('config', gaId, {
+            'page_path': pagePath,
+            'page_title': pageTitle
+          })
+        }
+      }
+      
+      // Also send explicit page_view event
+      window.gtag('event', 'page_view', {
+        'page_path': pagePath,
+        'page_title': pageTitle
+      })
+    }, 200)
   }
 }
 

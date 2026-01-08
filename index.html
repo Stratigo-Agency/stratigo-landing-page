@@ -22,11 +22,17 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       
-      // Initialize Consent Mode v2 - deny analytics by default until consent is given
+      // Check if user previously accepted cookies
+      const previousConsent = localStorage.getItem('stratigo_cookie_consent');
+      const hasConsent = previousConsent === 'accepted';
+      
+      // Initialize Consent Mode v2
+      // If user previously accepted, grant consent immediately
+      // Otherwise, deny by default and wait for user decision
       gtag('consent', 'default', {
-        'analytics_storage': 'denied',
-        'ad_storage': 'denied',
-        'wait_for_update': 500
+        'analytics_storage': hasConsent ? 'granted' : 'denied',
+        'ad_storage': hasConsent ? 'granted' : 'denied',
+        'wait_for_update': hasConsent ? 0 : 500
       });
       
       // Replace G-XXXXXXXXXX with your actual Google Analytics ID

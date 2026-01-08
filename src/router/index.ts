@@ -1,4 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+// Declare window types for Google Analytics
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void
+  }
+}
 import Beranda from '@/pages/Beranda.vue'
 import TentangKami from '@/pages/TentangKami.vue'
 import Portfolio from '@/pages/Portfolio.vue'
@@ -57,6 +64,31 @@ const router = createRouter({
       return savedPosition
     } else {
       return { top: 0 }
+    }
+  }
+})
+
+// Track page views on route changes (only if consent is granted)
+router.afterEach((to) => {
+  // Check if user has granted consent
+  const consent = localStorage.getItem('stratigo_cookie_consent')
+  if (consent === 'accepted' && typeof window.gtag === 'function') {
+    const pagePath = to.fullPath
+    const pageTitle = document.title
+    
+    // Find the GA script tag to get the ID
+    const gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]') as HTMLScriptElement
+    if (gaScript) {
+      const match = gaScript.src.match(/id=([^&]+)/)
+      const gaId = match ? match[1] : null
+      
+      if (gaId && gaId !== 'G-XXXXXXXXXX') {
+        // Update config with new page info
+        window.gtag('config', gaId, {
+          'page_path': pagePath,
+          'page_title': pageTitle
+        })
+      }
     }
   }
 })
