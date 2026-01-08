@@ -25,39 +25,37 @@ const saveConsent = (accepted: boolean) => {
 // Grant consent for Google Analytics (script already loaded from index.html)
 const grantConsent = () => {
   if (typeof window.gtag === 'function') {
-    // Update consent to granted
+    // Find the GA script tag to get the ID
+    const gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]') as HTMLScriptElement
+    const gaId = gaScript ? gaScript.src.match(/id=([^&]+)/)?.[1] : null
+    
+    if (!gaId || gaId === 'G-XXXXXXXXXX') {
+      console.warn('Google Analytics ID not found or not configured. Please update index.html with your GA ID.')
+      return
+    }
+    
+    // Update consent to granted FIRST
     window.gtag('consent', 'update', {
       'analytics_storage': 'granted',
       'ad_storage': 'granted'
     })
     
-    // Send a page view event after granting consent
-    // This ensures the current page is tracked since initial load was with consent denied
+    // Wait a bit for consent to be processed, then send page view
     setTimeout(() => {
       const pagePath = window.location.pathname + window.location.search
       const pageTitle = document.title
       
-      // Find the GA script tag to get the ID
-      const gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]') as HTMLScriptElement
-      if (gaScript) {
-        const match = gaScript.src.match(/id=([^&]+)/)
-        const gaId = match ? match[1] : null
-        
-        if (gaId && gaId !== 'G-XXXXXXXXXX') {
-          // Update config with page info to trigger a page view
-          window.gtag('config', gaId, {
-            'page_path': pagePath,
-            'page_title': pageTitle
-          })
-        }
-      }
-      
-      // Also send explicit page_view event
-      window.gtag('event', 'page_view', {
+      // Update config with page info - this triggers a page view
+      window.gtag('config', gaId, {
         'page_path': pagePath,
-        'page_title': pageTitle
+        'page_title': pageTitle,
+        'send_page_view': true
       })
-    }, 200)
+      
+      console.log('✅ Google Analytics tracking enabled for:', pagePath)
+    }, 300)
+  } else {
+    console.warn('gtag function not available. Google Analytics script may not be loaded.')
   }
 }
 
@@ -94,12 +92,21 @@ onMounted(() => {
   // Consent mode is already initialized in index.html with 'denied' by default
   const consent = checkConsent()
   
+  // Check if GA ID is configured
+  const gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]') as HTMLScriptElement
+  const gaId = gaScript ? gaScript.src.match(/id=([^&]+)/)?.[1] : null
+  
+  if (gaId === 'G-XXXXXXXXXX' || !gaId) {
+    console.warn('⚠️ Google Analytics ID not configured! Please replace G-XXXXXXXXXX in index.html with your actual GA ID.')
+  }
+  
   if (consent === null) {
     // No choice made yet, show banner
     // Consent remains 'denied' (set in index.html) until user accepts
     showBanner.value = true
   } else if (consent === 'accepted') {
-    // User previously accepted, grant consent
+    // User previously accepted, grant consent immediately
+    // Note: index.html should have already granted consent, but we ensure it here too
     grantConsent()
   } else {
     // User previously declined, ensure consent is denied
@@ -107,11 +114,83 @@ onMounted(() => {
   }
 })
 
+// Debug helper - available in console
+const debugGA = () => {
+  console.log('=== Google Analytics Debug ===')
+  console.log('1. Consent:', localStorage.getItem('stratigo_cookie_consent'))
+  console.log('2. gtag available:', typeof window.gtag === 'function')
+  console.log('3. dataLayer length:', window.dataLayer?.length || 0)
+  console.log('4. dataLayer:', window.dataLayer)
+  
+  const gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]') as HTMLScriptElement
+  const gaId = gaScript ? gaScript.src.match(/id=([^&]+)/)?.[1] : null
+  console.log('5. GA ID:', gaId)
+  
+  if (gaId === 'G-XXXXXXXXXX' || !gaId) {
+    console.error('❌ GA ID not configured! Replace G-XXXXXXXXXX in index.html')
+  }
+  
+  const cookies = document.cookie.split(';').filter(c => c.includes('_ga'))
+  console.log('6. GA Cookies:', cookies.length > 0 ? cookies : 'None')
+  
+  // Check consent commands in dataLayer
+  const consentCommands = window.dataLayer?.filter((item: any) => 
+    Array.isArray(item) && item[0] === 'consent'
+  ) || []
+  console.log('7. Consent commands:', consentCommands)
+  
+  return {
+    consent: localStorage.getItem('stratigo_cookie_consent'),
+    gtagAvailable: typeof window.gtag === 'function',
+    gaId,
+    hasCookies: cookies.length > 0
+  }
+}
+
+// Manual trigger function for testing
+const triggerPageView = () => {
+  const gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]') as HTMLScriptElement
+  const gaId = gaScript ? gaScript.src.match(/id=([^&]+)/)?.[1] : null
+  
+  if (!gaId || gaId === 'G-XXXXXXXXXX') {
+    console.error('❌ GA ID not configured!')
+    return
+  }
+  
+  if (typeof window.gtag === 'function') {
+    const pagePath = window.location.pathname + window.location.search
+    const pageTitle = document.title
+    
+    // Grant consent first
+    window.gtag('consent', 'update', {
+      'analytics_storage': 'granted',
+      'ad_storage': 'granted'
+    })
+    
+    // Then send page view
+    setTimeout(() => {
+      window.gtag('config', gaId, {
+        'page_path': pagePath,
+        'page_title': pageTitle,
+        'send_page_view': true
+      })
+      console.log('✅ Page view sent:', pagePath)
+    }, 100)
+  }
+}
+
+// Make functions available globally
+if (typeof window !== 'undefined') {
+  ;(window as any).debugGA = debugGA
+  ;(window as any).triggerPageView = triggerPageView
+}
+
 // Declare window types
 declare global {
   interface Window {
     dataLayer: any[]
     gtag: (...args: any[]) => void
+    debugGA?: () => any
   }
 }
 </script>

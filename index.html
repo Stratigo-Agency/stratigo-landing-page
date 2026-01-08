@@ -16,27 +16,41 @@
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      // Google Analytics Measurement ID
+      const GA_MEASUREMENT_ID = 'G-64GR7X74H7';
       
-      // Check if user previously accepted cookies
-      const previousConsent = localStorage.getItem('stratigo_cookie_consent');
-      const hasConsent = previousConsent === 'accepted';
-      
-      // Initialize Consent Mode v2
-      // If user previously accepted, grant consent immediately
-      // Otherwise, deny by default and wait for user decision
-      gtag('consent', 'default', {
-        'analytics_storage': hasConsent ? 'granted' : 'denied',
-        'ad_storage': hasConsent ? 'granted' : 'denied',
-        'wait_for_update': hasConsent ? 0 : 500
-      });
-      
-      // Replace G-XXXXXXXXXX with your actual Google Analytics ID
-      gtag('config', 'G-XXXXXXXXXX');
+      // Load Google Analytics
+      if (GA_MEASUREMENT_ID) {
+        // Load Google Analytics script
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+        document.head.appendChild(script);
+        
+        // Initialize dataLayer and gtag
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        // Check if user previously accepted cookies
+        const previousConsent = localStorage.getItem('stratigo_cookie_consent');
+        const hasConsent = previousConsent === 'accepted';
+        
+        // Initialize Consent Mode v2
+        // If user previously accepted, grant consent immediately
+        // Otherwise, deny by default and wait for user decision
+        gtag('consent', 'default', {
+          'analytics_storage': hasConsent ? 'granted' : 'denied',
+          'ad_storage': hasConsent ? 'granted' : 'denied',
+          'wait_for_update': hasConsent ? 0 : 500
+        });
+        
+        // Configure Google Analytics
+        gtag('config', GA_MEASUREMENT_ID);
+      } else {
+        console.warn('⚠️ Google Analytics ID not configured! Please replace G-XXXXXXXXXX in index.html with your actual GA ID.');
+      }
     </script>
   </head>
   <body>
