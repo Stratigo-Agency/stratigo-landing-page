@@ -122,7 +122,7 @@ onMounted(async () => {
             <div
               v-for="caseStudy in remainingStudies"
               :key="caseStudy._id"
-              class="group cursor-pointer flex-shrink-0 w-[280px] snap-start"
+              class="group cursor-pointer flex-shrink-0 w-[280px] snap-center"
             >
               <!-- Image -->
               <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
