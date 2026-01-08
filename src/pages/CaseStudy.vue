@@ -255,9 +255,59 @@ onMounted(() => {
 
     <!-- Case Study Content -->
     <article v-else-if="caseStudy" class="pb-20">
+      <!-- Title and Meta Section -->
+      <section class="px-6 md:px-12 py-12">
+        <div class="max-w-4xl mx-auto">
+          <!-- Back Link -->
+          <RouterLink 
+            to="/case-studies" 
+            class="inline-flex items-center gap-2 text-black/60 hover:text-black transition-colors mb-8 no-underline"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Case Studies
+          </RouterLink>
+
+          <!-- Meta Information -->
+          <div class="mb-8">
+            <div class="flex flex-wrap items-center gap-4 mb-6">
+              <span v-if="caseStudy.category" class="px-4 py-2 bg-black text-white text-sm font-medium rounded-full capitalize">
+                {{ caseStudy.category.replace('-', ' ') }}
+              </span>
+              <span v-if="caseStudy.client" class="text-black/60">
+                {{ caseStudy.client }}
+              </span>
+              <span class="text-black/60">
+                {{ formatDate(caseStudy.publishedAt) }}
+              </span>
+            </div>
+
+            <h1 class="text-2xl md:text-5xl lg:text-5xl font-medium mb-6 text-black leading-tight">
+              {{ caseStudy.title }}
+            </h1>
+
+            <p v-if="caseStudy.excerpt" class="text-lg text-black/70 mb-6">
+              {{ caseStudy.excerpt }}
+            </p>
+
+            <!-- Tags -->
+            <div v-if="caseStudy.tags && caseStudy.tags.length > 0" class="flex flex-wrap gap-2">
+              <span
+                v-for="(tag, index) in caseStudy.tags"
+                :key="index"
+                class="px-3 py-1 bg-gray-100 text-black text-sm rounded-full"
+              >
+                {{ tag }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Featured Image -->
-      <section v-if="caseStudy.featuredImage" class="px-6 md:px-12 py-12">
-        <div>
+      <section v-if="caseStudy.featuredImage" class="px-6 md:px-12 pb-12">
+        <div class="max-w-4xl mx-auto">
           <img
             :src="caseStudy.featuredImage?.asset 
               ? urlFor(caseStudy.featuredImage)
@@ -266,7 +316,7 @@ onMounted(() => {
                   .url()
               : undefined"
             :alt="caseStudy.featuredImage.alt || caseStudy.title"
-            class="w-full rounded-2xl max-w-4xl mx-auto object-contain"
+            class="w-full rounded-2xl object-contain"
           />
         </div>
       </section>
