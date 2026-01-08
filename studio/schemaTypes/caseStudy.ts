@@ -75,8 +75,9 @@ export default defineType({
     defineField({
       name: 'link',
       title: 'Link',
-      type: 'url',
-      description: 'Optional link to view the full case study',
+      type: 'string',
+      description: 'Optional link to view the full case study (e.g., /case-studies/fortu-digital or https://example.com)',
+      validation: (Rule) => Rule.optional(),
     }),
     defineField({
       name: 'order',

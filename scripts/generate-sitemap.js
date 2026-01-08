@@ -65,13 +65,28 @@ async function fetchBlogPosts() {
   }
 }
 
+// Fetch case study pages from Sanity
+async function fetchCaseStudyPages() {
+  try {
+    const query = `*[_type == "caseStudyPage" && isActive == true] | order(publishedAt desc) {
+      "slug": slug.current,
+      _updatedAt
+    }`
+    return await client.fetch(query)
+  } catch (error) {
+    console.error('Error fetching case study pages:', error)
+    return []
+  }
+}
+
 // Generate sitemap XML
-function generateSitemap(blogPosts = []) {
+function generateSitemap(blogPosts = [], caseStudyPages = []) {
   const now = new Date().toISOString().split('T')[0]
   
   const staticPages = [
     { url: '/', priority: '1.0', changefreq: 'weekly' },
     { url: '/blog', priority: '0.9', changefreq: 'daily' },
+    { url: '/case-studies', priority: '0.9', changefreq: 'weekly' },
     { url: '/contact', priority: '0.8', changefreq: 'monthly' },
     { url: '/privacy', priority: '0.5', changefreq: 'monthly' }
   ]
@@ -109,6 +124,21 @@ function generateSitemap(blogPosts = []) {
 `
   })
   
+  // Add case study pages
+  caseStudyPages.forEach(page => {
+    const lastmod = page._updatedAt 
+      ? new Date(page._updatedAt).toISOString().split('T')[0]
+      : now
+    
+    xml += `  <url>
+    <loc>${SITE_URL}/case-studies/${page.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+`
+  })
+  
   xml += `</urlset>`
   
   return xml
@@ -120,15 +150,25 @@ async function main() {
   console.log(`Sanity Project ID: ${SANITY_PROJECT_ID ? '✅ Configured' : '❌ Missing'}`)
   
   let blogPosts = []
+  let caseStudyPages = []
+  
   try {
     blogPosts = await fetchBlogPosts()
     console.log(`Found ${blogPosts.length} blog posts`)
   } catch (error) {
-    console.warn('⚠️  Could not fetch blog posts from Sanity, generating sitemap with static pages only')
+    console.warn('⚠️  Could not fetch blog posts from Sanity')
     console.warn('   Error:', error.message)
   }
   
-  const sitemap = generateSitemap(blogPosts)
+  try {
+    caseStudyPages = await fetchCaseStudyPages()
+    console.log(`Found ${caseStudyPages.length} case study pages`)
+  } catch (error) {
+    console.warn('⚠️  Could not fetch case study pages from Sanity')
+    console.warn('   Error:', error.message)
+  }
+  
+  const sitemap = generateSitemap(blogPosts, caseStudyPages)
   const outputPath = path.join(__dirname, '../public/sitemap.xml')
   
   // Ensure public directory exists
@@ -139,7 +179,7 @@ async function main() {
   
   fs.writeFileSync(outputPath, sitemap, 'utf8')
   console.log(`✅ Sitemap generated: ${outputPath}`)
-  console.log(`   - ${4 + blogPosts.length} URLs included`)
+  console.log(`   - ${5 + blogPosts.length + caseStudyPages.length} URLs included`)
 }
 
 main().catch(error => {

@@ -549,3 +549,177 @@ export const FEATURED_BLOG_POSTS_QUERY = `
   }
 `
 
+// Case Study Page Types
+export interface CaseStudyPageVideo {
+  _type: 'video'
+  url: string
+  caption?: string
+  autoplay?: boolean
+}
+
+export interface CaseStudyPageHeading {
+  _type: 'heading'
+  text: string
+  level: 'h1' | 'h2' | 'h3' | 'h4'
+}
+
+export interface CaseStudyPageTextBlock {
+  _type: 'textBlock'
+  text: string
+  alignment: 'left' | 'center' | 'right'
+}
+
+export interface CaseStudyPage {
+  _id: string
+  title: string
+  slug: {
+    current: string
+  }
+  excerpt: string
+  featuredImage: {
+    asset: {
+      _ref: string
+      _type: string
+    }
+    alt?: string
+    hotspot?: {
+      x: number
+      y: number
+      height: number
+      width: number
+    }
+    crop?: {
+      top: number
+      bottom: number
+      left: number
+      right: number
+    }
+  }
+  client?: string
+  category?: string
+  tags?: string[]
+  content: any[] // Flexible content blocks
+  publishedAt: string
+  isFeatured?: boolean
+  isActive?: boolean
+}
+
+// Case Study Page Queries
+export const CASE_STUDY_PAGES_QUERY = `
+  *[_type == "caseStudyPage" && (!defined(isActive) || isActive == true)] | order(publishedAt desc) {
+    _id,
+    title,
+    slug,
+    excerpt,
+    featuredImage {
+      asset,
+      alt,
+      hotspot,
+      crop
+    },
+    client,
+    category,
+    tags,
+    publishedAt,
+    isFeatured,
+    isActive
+  }
+`
+
+export const CASE_STUDY_PAGE_BY_SLUG_QUERY = `
+  *[_type == "caseStudyPage" && slug.current == $slug && (!defined(isActive) || isActive == true)][0] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    featuredImage {
+      asset,
+      alt,
+      hotspot,
+      crop
+    },
+    client,
+    category,
+    tags,
+    content[] {
+      _type == "block" => {
+        _type,
+        _key,
+        style,
+        children[] {
+          _key,
+          _type,
+          text,
+          marks[]
+        },
+        markDefs[] {
+          _key,
+          _type,
+          href
+        },
+        listItem,
+        level
+      },
+      _type == "image" => {
+        _type,
+        _key,
+        asset,
+        alt,
+        caption,
+        hotspot,
+        crop
+      },
+      _type == "video" => {
+        _type,
+        _key,
+        url,
+        caption,
+        autoplay
+      },
+      _type == "heading" => {
+        _type,
+        _key,
+        text,
+        level
+      },
+      _type == "textBlock" => {
+        _type,
+        _key,
+        text,
+        alignment
+      },
+      _type == "table" => {
+        _type,
+        _key,
+        rows[] {
+          cells[]
+        }
+      }
+    },
+    publishedAt,
+    isFeatured,
+    isActive
+  }
+`
+
+export const FEATURED_CASE_STUDY_PAGES_QUERY = `
+  *[_type == "caseStudyPage" && isFeatured == true && (!defined(isActive) || isActive == true)] | order(publishedAt desc) [0...3] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    featuredImage {
+      asset,
+      alt,
+      hotspot,
+      crop
+    },
+    client,
+    category,
+    tags,
+    publishedAt,
+    isFeatured,
+    isActive
+  }
+`
+

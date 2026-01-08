@@ -36,6 +36,15 @@
             </li>
             <li>
               <router-link 
+                to="/case-studies" 
+                @click="scrollToTop"
+                class="text-white/70 text-md no-underline hover:text-white transition-colors duration-200"
+              >
+                Case Studies
+              </router-link>
+            </li>
+            <li>
+              <router-link 
                 to="/contact" 
                 @click="scrollToTop"
                 class="text-white/70 text-md no-underline hover:text-white transition-colors duration-200"

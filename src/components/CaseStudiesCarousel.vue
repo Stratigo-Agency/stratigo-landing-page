@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { client, urlFor } from '@/sanity/client'
 import { CASE_STUDIES_QUERY, type CaseStudy } from '@/sanity/queries'
 
@@ -33,6 +34,12 @@ const getImageAlt = (caseStudy: CaseStudy): string => {
     return alt
   }
   return caseStudy.title || 'Case study image'
+}
+
+// Helper to check if URL is external
+const isExternalUrl = (url: string | undefined): boolean => {
+  if (!url) return false
+  return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('mailto:') || url.startsWith('tel:')
 }
 
 // Handle carousel scroll
@@ -74,9 +81,15 @@ onMounted(async () => {
       <div class="flex flex-col gap-8">
         
         <!-- Featured Case Study (Large) -->
-        <div 
-          v-if="featuredStudy" 
-          class="grid grid-cols-1 lg:grid-cols-2 overflow-hidden min-h-[400px] lg:min-h-[500px] rounded-xl overflow-hidden mx-6"
+        <component
+          :is="featuredStudy.link && isExternalUrl(featuredStudy.link) ? 'a' : featuredStudy.link ? RouterLink : 'div'"
+          v-if="featuredStudy"
+          :href="featuredStudy.link && isExternalUrl(featuredStudy.link) ? featuredStudy.link : undefined"
+          :to="featuredStudy.link && !isExternalUrl(featuredStudy.link) ? featuredStudy.link : undefined"
+          :target="featuredStudy.link && isExternalUrl(featuredStudy.link) ? '_blank' : undefined"
+          :rel="featuredStudy.link && isExternalUrl(featuredStudy.link) ? 'noopener noreferrer' : undefined"
+          class="grid grid-cols-1 lg:grid-cols-2 overflow-hidden min-h-[400px] lg:min-h-[500px] rounded-xl overflow-hidden mx-6 no-underline"
+          :class="featuredStudy.link ? 'cursor-pointer' : ''"
         >
           <!-- Left: Text Content with dark background -->
           <div class="bg-gray-100 p-8 lg:p-12 flex flex-col justify-center order-2 lg:order-1">
@@ -110,7 +123,7 @@ onMounted(async () => {
             <!-- Mobile: ensure minimum height -->
             <div class="lg:hidden aspect-[16/9]"></div>
           </div>
-        </div>
+        </component>
 
         <!-- Smaller Case Studies - Mobile Carousel -->
         <div v-if="remainingStudies.length > 0" class="md:hidden">
@@ -119,10 +132,16 @@ onMounted(async () => {
             class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 pl-6 scrollbar-hide"
             @scroll="handleScroll"
           >
-            <div
+            <component
+              :is="caseStudy.link && isExternalUrl(caseStudy.link) ? 'a' : caseStudy.link ? RouterLink : 'div'"
               v-for="caseStudy in remainingStudies"
               :key="caseStudy._id"
-              class="group cursor-pointer flex-shrink-0 w-[280px] snap-center"
+              :href="caseStudy.link && isExternalUrl(caseStudy.link) ? caseStudy.link : undefined"
+              :to="caseStudy.link && !isExternalUrl(caseStudy.link) ? caseStudy.link : undefined"
+              :target="caseStudy.link && isExternalUrl(caseStudy.link) ? '_blank' : undefined"
+              :rel="caseStudy.link && isExternalUrl(caseStudy.link) ? 'noopener noreferrer' : undefined"
+              class="group flex-shrink-0 w-[280px] snap-center no-underline"
+              :class="caseStudy.link ? 'cursor-pointer' : ''"
             >
               <!-- Image -->
               <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
@@ -149,7 +168,7 @@ onMounted(async () => {
                   {{ caseStudy.client }}
                 </p>
               </div>
-            </div>
+            </component>
             <!-- Spacer for right padding on mobile -->
             <div class="flex-shrink-0 w-2" aria-hidden="true"></div>
           </div>
@@ -173,10 +192,16 @@ onMounted(async () => {
           v-if="remainingStudies.length > 0" 
           class="hidden md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 px-6"
         >
-          <div
+          <component
+            :is="caseStudy.link && isExternalUrl(caseStudy.link) ? 'a' : caseStudy.link ? RouterLink : 'div'"
             v-for="caseStudy in remainingStudies"
             :key="caseStudy._id"
-            class="group cursor-pointer"
+            :href="caseStudy.link && isExternalUrl(caseStudy.link) ? caseStudy.link : undefined"
+            :to="caseStudy.link && !isExternalUrl(caseStudy.link) ? caseStudy.link : undefined"
+            :target="caseStudy.link && isExternalUrl(caseStudy.link) ? '_blank' : undefined"
+            :rel="caseStudy.link && isExternalUrl(caseStudy.link) ? 'noopener noreferrer' : undefined"
+            class="group no-underline"
+            :class="caseStudy.link ? 'cursor-pointer' : ''"
           >
             <!-- Image -->
             <div class="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl">
@@ -203,7 +228,7 @@ onMounted(async () => {
                 {{ caseStudy.client }}
               </p>
             </div>
-          </div>
+          </component>
         </div>
 
       </div>

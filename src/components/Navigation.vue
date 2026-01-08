@@ -42,6 +42,15 @@
               Blog
             </router-link>
             <router-link 
+              to="/case-studies" 
+              @click="scrollToTop"
+              class="no-underline font-medium transition-colors duration-200"
+              :class="isScrolledPastHero ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'"
+              active-class="text-black"
+            >
+              Case Studies
+            </router-link>
+            <router-link 
               to="/contact" 
               @click="scrollToTop"
               class="no-underline font-medium transition-colors duration-200"
@@ -150,6 +159,14 @@
             active-class="text-black"
           >
             Blog
+          </router-link>
+          <router-link 
+            to="/case-studies" 
+            @click="closeMenu(); scrollToTop()"
+            class="no-underline font-medium transition-colors duration-200 py-2 text-black hover:text-black/70"
+            active-class="text-black"
+          >
+            Case Studies
           </router-link>
           <router-link 
             to="/contact" 

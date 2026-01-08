@@ -14,6 +14,8 @@ import Contact from '@/pages/Contact.vue'
 import Blog from '@/pages/Blog.vue'
 import BlogPost from '@/pages/BlogPost.vue'
 import Privacy from '@/pages/Privacy.vue'
+import CaseStudies from '@/pages/CaseStudies.vue'
+import CaseStudy from '@/pages/CaseStudy.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -57,6 +59,16 @@ const router = createRouter({
       path: '/privacy',
       name: 'Privacy',
       component: Privacy
+    },
+    {
+      path: '/case-studies',
+      name: 'CaseStudies',
+      component: CaseStudies
+    },
+    {
+      path: '/case-studies/:slug',
+      name: 'CaseStudy',
+      component: CaseStudy
     }
   ],
   scrollBehavior(_to, _from, savedPosition) {
